@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Question Page</title>
+</head>
+<body>
+<ol>
+{% autoescape false %}
+{% for instance in qQues: %}
+<form action="eval.py" method="post">
+<li>{{ instance.questionNo }} {{ instance.description }}
+	
+	{% endfor %}
+</li> 
+</ul>	
+</li>{% endfor %}
+{% endautoescape %}
+</ol>
+	<input type="submit" name="submit">
+</form>
+</body>
+</html>
