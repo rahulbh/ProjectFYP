@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Quiz Assessment System</title>
+<title>{{ title }}</title>
 <meta charset="utf-8">
-<link rel="stylesheet" href="home.css"> 
-<link rel="stylesheet" type="text/css" href="modal.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> 
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
 </head>
 <body>
 <div id="wrapper">
@@ -31,14 +31,18 @@
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
-    <h2>Add New Assessment</h2>
+    <h4>Congratulations</h4>
     <div id="leftcolumn">
     <img src="wizard_add_assessment.jpg" height="205"></div>
     <div id="rightcolumn">
-    <p>This wizard allows you to add a new assessment quickly and easily. You can set several options now, but you can also change them later after the assessment has been created. 
+    <p>
+Congrats, your assessment has been created! <a href="insert_ques.html">Start Adding Questions</a> now or add them later.
 </p>
-<form action="insert_title">Title: <input type="text" name="title" id="title" required placeholder="Enter Assessment Title">
-<button style="text-align: right;" type="submit">Create</button></div>
+<form action="insert_GO"> 
+
+<br>
+<button style="text-align: right;" type="submit">Finish</button></div>
+
 </form><br><br><br><br><br><br><br>
   </div>
 
@@ -50,7 +54,7 @@
 <br><i> &copy; 2017 NANYANG TECHNOLOGICAL UNIVERSITY</i>  
    </footer>
   </div>
-<script type="text/javascript" src="modal.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>
 </body>
 </html>
 

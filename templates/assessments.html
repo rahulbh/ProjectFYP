@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>{{ title }}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> 
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='dist/themes/default/style.min.css') }}">
+
+</head>
+<body>
+<div id="wrapper">
+  <header>
+ <img src="ntu_logo.jpg" alt="NTU logo" height="102" width="300" >
+  </header>
+  <div id="leftcolumn">
+    <!--  setup a container element -->
+  <div id="jstree">
+    <!-- in this, the tree is populated from inline HTML -->
+    <ul>
+      <li>Root node 1
+        <ul>
+          <li id="child_node_1">Child node 1</li>
+          <li>Child node 2</li>
+        </ul>
+      </li>
+      <li>Root node 2</li>
+    </ul>
+  </div>
+
+  </div>
+  <div id="rightcolumn">
+    <div class="content"> 
+        <!-- Trigger/Open The Modal -->
+<button id="myBtn"><img src="add_assess.png " height="15" width="15"><b> &nbsp; Add Assessment</b></button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h4>Custom Messages</h4>
+    <div id="leftcolumn">
+    <img src="wizard_add_assessment.jpg" height="205"></div>
+    <div id="rightcolumn">
+    <p>
+Do you want to add custom messages (for example: overview, instructions, thank-you messages, etc.) in your assessment? 
+</p>
+<form action="congrats" method="post"> 
+<input type="radio" name="random" id="random_questions" value="yes_display"> No, I don't want to add custom messages<br>
+<input type="radio" name="random" id="random_answers" value="yes_display"> Yes, I want to add custom messages<br> 
+
+<a href="">Click here to add the message displayed in the assessment page</a><br>
+<a href="">Click here to add the message displayed in the results page</a>
+
+<br>
+<button style="text-align: right;" type="submit">Next</button></div>
+
+</form><br><br><br><br><br><br><br>
+  </div>
+
+</div>
+    </div></div>
+
+    </div><br><br><br><br><br><br><br><br></div></div>
+    <footer>
+<br><i> &copy; 2017 NANYANG TECHNOLOGICAL UNIVERSITY</i>  
+   </footer>
+  </div>
+
+<script type="text/javascript"> 
+  <script>
+  $(function () {
+    //  create an instance when the DOM is ready
+    $('#jstree').jstree();
+    //  bind to events triggered on the tree
+    $('#jstree').on("changed.jstree", function (e, data) {
+      console.log(data.selected);
+    });
+    //  interact with the tree - either way is OK
+    $('button').on('click', function () {
+      $('#jstree').jstree(true).select_node('child_node_1');
+    });
+  });
+  </script>
+
+</script>
+<script src="{{ url_for('static', filename='dist/libs/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='dist/jstree.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>
+</body>
+</html>
+
+
