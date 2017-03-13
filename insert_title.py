@@ -47,6 +47,27 @@ def insert_question_text():
     if(type=='MCQ'):
         return render_template('insert_question_text.html')
     
+@app.route('/check_param_type', methods=['POST'])
+def check_param_type():
+    count=request.form('param_count')
+    return render_template('check_param_type.html')
+
+    
+
+    
+@app.route('/insert_params', methods=['POST'])
+def insert_params():    
+    if 'http://127.0.0.1:5000/insert_question_text'==request.referrer:
+        #count=request.form('param_count')
+        counter=0
+        return render_template('insert_params.html')
+    
+        
+        
+    
+    
+
+
 @app.route('/insert_choices', methods=['POST'])
 def insert_choices():
     return render_template('insert_choices.html')
