@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html ng-app="add_question">
+<head>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
+<title>{{ title }}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> 
+<!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">-->
+</head>
+<body>
+<div id="wrapper">
+  <header>
+ <img src="ntu_logo.jpg" alt="NTU logo" height="102" width="300" >
+  </header>
+  <div id="leftcolumn">
+  <nav>
+    <ul>
+      <li><a href="students.html">Students</a></li>
+      <br>
+      <li><a href="assessments">Assessments</a></li>
+  </ul>
+  </nav>  
+  </div>
+  <div id="rightcolumn">
+    <div class="content"> 
+    <!--<div ng-view>    </div>-->
+          <span class="close">&times;</span>
+    <h4>Add New Question</h4>
+    <div id="leftcolumn">
+    <img src="wizard_add_question.jpg" height="205"></div>
+    <div id="rightcolumn">
+    <p>
+Enter the choices for this question and specify the right answer.
+</p>
+<form action="">
+<div id="POItablediv">
+    <!--<input type="button" id="addPOIbutton" value="Add POIs"/><br/><br/>-->
+    <table id="POITable" border="1">
+        <thead>
+        <td>
+          
+        </td>
+          <td>
+            Answer
+          </td>
+          <td>
+            Right
+          </td>
+          <td>
+            
+          </td>
+          <td>
+            
+          </td>
+        </thead>
+        <tr>
+            <td></td>
+            <td><input size=25 type="text" id="latbox"/></td>
+            <td><input type="radio" name="right"></td>
+            <td><input type="button" id="delPOIbutton" value="Delete" onclick="deleteRow(this)"/></td>
+            <td><input type="button" id="addmorePOIbutton" value="Add More Choices" onclick="insRow()"></td>
+        </tr>
+    </table>
+
+
+<button style="text-align: right;" type="submit">Next</button>
+
+</form></div><br><br><br><br><br><br><br>
+  </div>
+ 
+    </div></div>
+
+    </div><br><br><br><br><br><br><br><br></div></div>
+    <footer>
+<br><i> &copy; 2017 NANYANG TECHNOLOGICAL UNIVERSITY</i>  
+   </footer>
+  </div>
+
+<!--<script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>-->
+ <script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script>
+ <script type="text/javascript" src="{{ url_for('static', filename='add_tablerow.js')}}"'></script>
+ 
+</body>
+</html>
+
+

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> 
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='dist/themes/default/style.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='jstree/dist/themes/default/style.min.css') }}">
 
 </head>
 <body>
@@ -18,9 +18,9 @@
   <div id="jstree">
     <!-- in this, the tree is populated from inline HTML -->
     <ul>
-      <li>Root node 1
+      <li>Assessments
         <ul>
-          <li id="child_node_1">Child node 1</li>
+          <li id="child_node_1"><a href="">Child node 1</a></li>   <!-- Add newly created assessment link -->
           <li>Child node 2</li>
         </ul>
       </li>
@@ -61,6 +61,21 @@ Do you want to add custom messages (for example: overview, instructions, thank-y
   </div>
 
 </div>
+
+  <!-- ADD JAVASCRIPT TO OPEN for the given assessment -->
+
+  <h3>Pick a task...</h3>
+  <ul>
+    <li>
+      Add a <a href="add_question_basic">new question</a> or a <a href="#">new question folder...</a>
+    </li>
+    <li>
+      Preview the assessment
+    </li>
+    <li>
+      Review responses, given answers and results...
+    </li>
+  </ul>
     </div></div>
 
     </div><br><br><br><br><br><br><br><br></div></div>
@@ -70,7 +85,7 @@ Do you want to add custom messages (for example: overview, instructions, thank-y
   </div>
 
 <script type="text/javascript"> 
-  <script>
+ 
   $(function () {
     //  create an instance when the DOM is ready
     $('#jstree').jstree();
@@ -78,16 +93,16 @@ Do you want to add custom messages (for example: overview, instructions, thank-y
     $('#jstree').on("changed.jstree", function (e, data) {
       console.log(data.selected);
     });
-    //  interact with the tree - either way is OK
+    //  interact with the tree
     $('button').on('click', function () {
       $('#jstree').jstree(true).select_node('child_node_1');
     });
   });
   </script>
 
-</script>
-<script src="{{ url_for('static', filename='dist/libs/jquery.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='dist/jstree.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='jstree/dist/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='jstree/dist/jstree.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>
 </body>
 </html>

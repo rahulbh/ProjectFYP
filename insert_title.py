@@ -37,5 +37,20 @@ def congrats():
 def assessments():
     return render_template('assessments.html')
 
+@app.route('/add_question_basic')
+def add_question():
+    return render_template('add_question_basic.html')
+
+@app.route('/insert_question_text', methods=['POST'])
+def insert_question_text():
+    type=request.form['type']
+    if(type=='MCQ'):
+        return render_template('insert_question_text.html')
+    
+@app.route('/insert_choices', methods=['POST'])
+def insert_choices():
+    return render_template('insert_choices.html')
+
+
 
 app.run(debug=True)
