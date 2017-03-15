@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request
+from wtforms import Form, RadioField
+from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
 
 app = Flask(__name__)
 @app.route('/insert_title')
@@ -41,16 +43,28 @@ def assessments():
 def add_question():
     return render_template('add_question_basic.html')
 
+class QuestionDesc(Form):
+        desc = TextAreaField('desc', [validators.Required("Please enter Description.")])
+        counter = TextField('counter')
+        submit = SubmitField('submit')
+        
+        
 @app.route('/insert_question_text', methods=['POST'])
 def insert_question_text():
-    type=request.form['type']
-    if(type=='MCQ'):
-        return render_template('insert_question_text.html')
+    #type=request.form['type']
+    form=QuestionDesc()
+    #if(type=='MCQ'):
+    return render_template('insert_question_text.html', form=form)
     
+class CheckParamTypeForm(Form):
+    example = RadioField('checktype', choices=[('text','Text'),('Picture','Picture')])
+    
+
 @app.route('/check_param_type', methods=['POST'])
 def check_param_type():
-    count=request.form('param_count')
-    return render_template('check_param_type.html')
+    param_count=request.form['counter']
+    form=CheckParamTypeForm()
+    return render_template('check_param_type.html', form=form, param_count=range(int(param_count)))
 
     
 
@@ -61,11 +75,6 @@ def insert_params():
         #count=request.form('param_count')
         counter=0
         return render_template('insert_params.html')
-    
-        
-        
-    
-    
 
 
 @app.route('/insert_choices', methods=['POST'])

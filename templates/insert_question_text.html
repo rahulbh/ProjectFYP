@@ -50,11 +50,14 @@ This wizard allows you to add a new question quickly and easily. You can set sev
         
 <form action="check_param_type" method="post" id="choice_form"> 
 <div id="test1"><a href="javascript:void(0)" class="test">
-<textarea rows="5" cols="80" form="choice_form" id="test2"></textarea>
+{{ form.desc(rows='20',cols='30') }}
+<br>
+{{ form.counter }}
+{{ form.submit }}
 </a></div>
   * Right click in the field below to add a parameter in question description
 <br> <br> <br>
-<div id="POItablediv">
+<!--<div id="POItablediv">
     <table id="POITable" border="1">
         <thead>
         <td>
@@ -81,7 +84,7 @@ This wizard allows you to add a new question quickly and easily. You can set sev
             <td><input type="button" id="addmorePOIbutton" value="Add More Choices" onclick="insRow()"></td>
         </tr>
     </table>
-
+-->
 <input type="hidden" name="param_count" id="param_count" />
 <button type="submit">Next</button>
 </form>
@@ -104,7 +107,7 @@ This wizard allows you to add a new question quickly and easily. You can set sev
 
     function insertP()
     {
-   $('#test2').append(' %%P%% ')
+   $('#desc').append(' %%P%% ')
     }
    
 
@@ -117,10 +120,11 @@ This wizard allows you to add a new question quickly and easily. You can set sev
         clicks++;
         $.cookie('stored_clicks', clicks);
         //alert($.cookie('stored_clicks'));
+        document.getElementById('counter').value = $.cookie('stored_clicks');
     });
 });
 
-  document.getElementById('param_count').value = $.cookie('stored_clicks');
+  document.getElementById('counter').value = $.cookie('stored_clicks');
 
 </script>
 
