@@ -36,15 +36,16 @@
     <div id="rightcolumn">
 
 {% autoescape false %}
-<form action="add_param_type.py" method="post">
+<form action="insert_params" method="post">
 
 {% for i in param_count: %}
 Type of Parameter {{ i+1 }} :
 <br><br>  
 <fieldset id= '{{ i }}' >
 Text:
-<input type="radio" value="text" name="{{ i }}"> &nbsp; &nbsp; &nbsp;
-Picture: <input type="radio" value="text" name="{{ i }}">
+<input type="radio" value="0" name="{{ i }}"> &nbsp; &nbsp; &nbsp; 
+<!-- '0' corresponds to Text and '1' corresponds to Picture'-->
+Picture: <input type="radio" value="1" name="{{ i }}">
 </fieldset>
 <br><br>
 {% endfor %}
