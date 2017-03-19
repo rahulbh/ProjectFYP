@@ -3,9 +3,23 @@ from werkzeug.utils import secure_filename
 from wtforms import Form, RadioField
 import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
+from db_init import db, load_db, QnA
 
+# Flask: Initialize
 app = Flask(__name__)
-@app.route('/insert_title')
+ 
+# Flask-SQLAlchemy: Initialize
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://testuser:test123@localhost:5432/testdb'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://testuser:xxxx@localhost:5432/testdb'
+db.init_app(app)   # Bind SQLAlchemy to this Flask app
+ 
+# Create the database tables and records inside a temporary test context
+with app.test_request_context():
+    load_db(db)
+    
+data=QnA()
+
+
 def insert_title():
     #title=request.form['title']
     title="SAMPLE QUIZ"
@@ -14,6 +28,8 @@ def insert_title():
     
     else:
         return render_template("home_instructor.html")
+
+
 
 
 
@@ -62,10 +78,11 @@ param_count=0
 @app.route('/check_param_type', methods=['POST'])
 def check_param_type():
     global param_count
+    
     param_count=request.form['counter']
     print param_count   
     return render_template('check_param_type.html', param_count=range(int(param_count)))
-
+    
 # This is the path to the upload directory
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 # These are the extension that we are accepting to be uploaded
@@ -92,7 +109,6 @@ def insert_params():
     return render_template('insert_params.html', params=params)
 
 
-
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -109,13 +125,7 @@ def upload():
             # Move the file form the temporal folder to
             # the upload folder we setup
             imageVar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    return """
-      <!DOCTYPE html>
-      <html>
-      <head><title>Hello</title></head>
-      <body><h1>Hello, from HTML</h1></body>
-      </html>
-      """, 200
+    return render_template('check_varations.html')
       
                 
                 
@@ -123,6 +133,7 @@ def upload():
 def insert_choices():
     return render_template('insert_choices.html')
 
-
-
-app.run(debug=True)
+if __name__=='__main__':
+    app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    app.run(debug=True)

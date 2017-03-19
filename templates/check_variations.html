@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html ng-app="add_question">
+<head>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
+<title>{{ title }}</title>
+<meta charset="utf-8">
+ <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+<script src="{{ url_for('static', filename='contextmenu.js') }}"></script> 
+<link rel="stylesheet" href="{{ url_for('static', filename='contextmenu.css') }}" /> 
+<!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">-->
+</head>
+<body>
+<div id="wrapper">
+  <header>
+ <img src="/static/ntu_logo.jpg" alt="NTU logo" height="102" width="300" >
+  </header>
+  <div id="leftcolumn">
+  <nav>
+    <ul>
+      <li><a href="students.html">Students</a></li>
+      <br>
+      <li><a href="assessments">Assessments</a></li>
+  </ul>
+  </nav>  
+  </div>
+  <div id="rightcolumn">
+    <div class="content"> 
+    <!--<div ng-view>    </div>-->
+          <span class="close">&times;</span>
+    <h4>Add New Question</h4>
+    <div id="leftcolumn">
+    <img src="/static/wizard_add_question.jpg" height="205"></div>
+    <div id="rightcolumn">
+    <p>
+
+This wizard allows you to add a new question quickly and easily. You can set several options now. 
+</p>
+  
+
+{% autoescape false %}
+<h2>{{ params|length }}</h2>
+<form action="upload" method="post" enctype="multipart/form-data">
+{% for i in range(params|length) : %}
+  {% if params[i]==0: %}
+        Enter Param Value: <input type="text" name="text_file{{ i }}"><br /><br />
+    {% else: %}
+        Upload Param Image: <input type="file" name="image_file{{ i }}"><br /><br />
+  {% endif %}
+{% endfor %}
+{% endautoescape %}
+<input type="submit" value="Submit"> 
+</form>
+
+<button type="submit">Next</button>
+</form>
+</div><br><br><br><br><br><br><br>
+  </div>
+ 
+    </div></div>
+
+    </div><br><br><br><br><br><br><br><br></div></div>
+    <footer>
+<br><i> &copy; 2017 NANYANG TECHNOLOGICAL UNIVERSITY</i>  
+   </footer>
+  </div>
+
+<!--<script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>-->
+<script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script>
+<script type="text/javascript" src="{{ url_for('static', filename='add_tablerow.js')}}"'></script>
+
+
+</body>
+</html>
+
