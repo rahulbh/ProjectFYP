@@ -35,54 +35,80 @@ This wizard allows you to add a new question quickly and easily. You can set sev
 </p>
   
 
-{% autoescape false %}
-<h2>{{ params|length }}</h2>
-<form action="upload" method="post" enctype="multipart/form-data">
-{% for i in range(params|length) : %}
-  {% if params[i]==0: %}
-    Do you want Variations in this text Parameter?
-    
     <script type="text/javascript">
 
  function add_param_options(){
     var radioVal=document.getElementsByName('text');
-    if (radioVal=='yes_var') {
+    if (radioVal[0].checked) {
       alert("You selected YES!");
-      $('#number_var').append('<select name="param_var"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>');
+      $('#number_var').html('Enter Number of Variations: <select name="param_var" onchange="add_text_var();add_image_var();"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>');
+    }
+    else{
+     $('#number_var').html(''); 
     }
   }
 
-  $(".text_var").click(add_param_options);
+function add_text_var(){
+	var varVal=document.getElementsByName('param_var');
+	//for loop on call by class
+	for(var x = 0; x < document.getElementsByClassName("var_text_fields").length; x++){
+		for(var i = 0; i<varVal[0].value-1; i++)
+		{
+			var initial_html = document.getElementsByClassName("var_text_fields")[x].innerHTML;
+			console.log(initial_html);
+			document.getElementsByClassName("var_text_fields")[x].innerHTML = initial_html + 'Enter Text Param Value: <input type="text" name="text_file" class="params"><br /><br />';
+		}
+	}
+
+}
+
+function add_image_var(){
+	var varVal=document.getElementsByName('param_var');
+	// for loop on call by class
+	for(var x = 0; x < document.getElementsByClassName("var_img_fields").length; x++){
+		for(var i = 0; i<varVal[0].value-1; i++)
+		{
+			var initial_html = document.getElementsByClassName("var_img_fields")[x].innerHTML;
+			console.log(initial_html);
+		document.getElementsByClassName("var_img_fields")[x].innerHTML = initial_html + 'Upload Param Image: <input type="file" name="image_file" class="params"><br /><br />';
+	}
+}
+
+}
 </script>
-
-    Yes:
-    <input type="radio" class="text_var" name="text" value="yes_var" onclick="add_param_options();">
+{% autoescape false %}
+<h2>{{ params|length }}</h2>
+<form action="upload" method="post" enctype="multipart/form-data">
+    Do you want Variations in these Parameters?
+	Yes:
+    <input type="radio" class="var" name="text" value="yes_var" onclick="add_param_options();">
     No: 
-    <input type="radio" class="text_var" name="text" value="no_var" onclick="add_param_options();">
+    <input type="radio" class="var" name="text" value="no_var" onclick="add_param_options();" checked>
+
+
+
     <div id="number_var">
-      <select name="param_var"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+
     </div>
 
-        Enter Text Param Value: <input type="text" name="text_file{{ i }}"><br /><br />
-    {% else: %}
 
-    Do you want Variations in this text Parameter?
-    Yes:
-    <input type="radio" class="image_var" name="image" value="yes_var" onclick="add_param_options();">
-    No: 
-    <input type="radio" class="image_var" name="image" value="no_var" onclick="add_param_options();">
-    <div id="number_var">
-      <select name="param_var"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
-    </div>
+<div id="number_var"></div>
+{% for i in range(params|length) : %} 
+ {% if params[i]==0: %} 
+ Enter Text Param({{ i+1 }}) Value : <input type="text" name="text_file" class="params"><br /><br />
+ <div class='var_text_fields'></div>
 
-        Upload Param Image: <input type="file" name="image_file{{ i }}"><br /><br />
+ {% else: %} 
+ 
+ Upload Param({{ i+1 }}) Image: <input type="file" name="image_file" class="params"><br /><br />
+
+ <div class='var_img_fields'></div>
   {% endif %}
-{% endfor %}
+  {% endfor %}
+
+        
 {% endautoescape %}
 <input type="submit" value="submit"> 
-</form>
-
-<button type="submit">Next</button>
 </form>
 </div><br><br><br><br><br><br><br>
   </div>

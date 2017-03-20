@@ -13,6 +13,11 @@
 <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">-->
 </head>
 <body>
+ <script type="text/javascript">
+     var delete_cookie = function(name) {
+    document.cookie = 0;
+};
+  </script>
 <div id="wrapper">
   <header>
  <img src="/static/ntu_logo.jpg" alt="NTU logo" height="102" width="300" >
@@ -49,7 +54,7 @@ Picture: <input type="radio" value="1" name="{{ i }}">
 </fieldset>
 <br><br>
 {% endfor %}
-<button type="submit"> Next </button>
+<button type="submit" onclick="delete_cookie('stored_clicks')"> Next </button>
 </form>
 {% endautoescape %}
 
@@ -63,6 +68,7 @@ Picture: <input type="radio" value="1" name="{{ i }}">
 <br><i> &copy; 2017 NANYANG TECHNOLOGICAL UNIVERSITY</i>  
    </footer>
   </div>
+
 
 <!--<script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>-->
 <script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script>

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html ng-app="add_question">
 <head>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script> -->
 <title>{{ title }}</title>
 <meta charset="utf-8">
  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
-<script src="{{ url_for('static', filename='contextmenu.js') }}"></script> 
+<!-- <script src="{{ url_for('static', filename='contextmenu.js') }}"></script>  -->
 <link rel="stylesheet" href="{{ url_for('static', filename='contextmenu.css') }}" /> 
 <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">-->
 </head>
@@ -39,25 +39,43 @@
 This wizard allows you to add a new question quickly and easily. You can set several options now. 
 </p>
   
-
 {% autoescape false %}
-<h2>{{ params|length }}</h2>
-<form action="upload" method="post" enctype="multipart/form-data">
-{% for i in range(params|length) : %}
-  {% if params[i]==0: %}
-        Enter Param Value: <input type="text" name="text_file{{ i }}"><br /><br />
-    {% else: %}
-        Upload Param Image: <input type="file" name="image_file{{ i }}"><br /><br />
-  {% endif %}
+{% for i in range(varVal): %}
+Answer Table for Variation {{ i+1 }} :
+<div id="POItablediv">
+    <table id="POITable{{ i }}" border="1">
+        <thead>
+        <td>
+          
+        </td>
+          <td>
+            Answer
+          </td>
+          <td>
+            Right
+          </td>
+          <td>
+            
+          </td>
+          <td>
+            
+          </td>
+        </thead>
+        <tr>
+            <td>1</td>
+            <td><input size=25 type="text" id="latbox"/></td>
+            <td><input type="radio" name="right"></td>
+            <td><input type="button" id="delPOIbutton" value="Delete" onclick="deleteRow(this, {{ i }})"/></td>
+            <td><input type="button" id="addmorePOIbutton" value="Add More Choices" onclick="insRow({{ i }})"></td>
+        </tr>
+    </table>
+    <br><br><br>
 {% endfor %}
-{% endautoescape %}
-<input type="submit" value="Submit"> 
-</form>
-
 <button type="submit">Next</button>
 </form>
 </div><br><br><br><br><br><br><br>
   </div>
+  {% endautoescape %}
  
     </div></div>
 
@@ -67,8 +85,8 @@ This wizard allows you to add a new question quickly and easily. You can set sev
    </footer>
   </div>
 
-<!--<script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>-->
-<script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script>
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script> -->
 <script type="text/javascript" src="{{ url_for('static', filename='add_tablerow.js')}}"'></script>
 
 

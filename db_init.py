@@ -8,7 +8,7 @@ class QnA(db.Model):
     
     questionNo = db.Column(db.Integer, primary_key=True, autoincrement=True)
     questionGroup = db.Column(db.String(64))
-    imgData = db.Column(db.String(256))
+    #imgData = db.Column(db.String(256))
     description = db.Column(db.TEXT)
     remarks = db.Column (db.String(2048))
     ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
@@ -21,10 +21,10 @@ def load_db(db):
     db.create_all()
     
     testcases=[{"questionNo":801, "questionGroup":"General Science","description":"This question does not relate to the image! Suppose that you plucked %%P1%% apples,and Steve took away three. How many apples do you have?"\
-            ,"ques":[['1','0','0','five'],['1','1','0','six']],"ans":[['0','0','10','0'],['0','1','11','0'],['0','2','2','1'],['0','3','13','0'],['0','4','14','0'],['1','0','21','0'],\
+            ,"ques":[['1','0','0','text','five'],['1','1','0','text','six']],"ans":[['0','0','10','0'],['0','1','11','0'],['0','2','2','1'],['0','3','13','0'],['0','4','14','0'],['1','0','21','0'],\
                                                                       ['1','1','22','0'],['1','2','23','0'],['1','3','24','0'],['1','4','All of the Above','0'],['1','5','None of the Above','1']],"remarks":"Hello 801"},\
            {"questionNo":802,"questionGroup":"General Science","description":"Which scientist developed the theory of universal gravitation?"\
-            ,"ques":[['0','0','0','0'],['0','0','0','0']],"ans":[['0','0','Issac Newtown','0'],['0','1','Charles Darwin','1'],['0','2','Albert Einstein','0'],['0','3','Michael Faraday','0']],"remarks":"Hello 802"},\
+            ,"ques":[['0','0','0','0','0'],['0','0','0','0','0']],"ans":[['0','0','Issac Newtown','0'],['0','1','Charles Darwin','1'],['0','2','Albert Einstein','0'],['0','3','Michael Faraday','0']],"remarks":"Hello 802"},\
            \
            {"questionNo":803,"questionGroup":"General Science","description":"Which scientist created e=mc<sup>2</sup>??"\
             ,"ques":[['0','0','0','0']],"ans":[['0','0','Issac Newtown','0'],['0','1','Charles Darwin','0'],['0','2','Albert Einstein','1'],['0','3','Michael Faraday','0']],"remarks":"Hello 803"},\

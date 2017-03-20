@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from wtforms import Form, RadioField
 import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
-from db_init import db, load_db, QnA
+from db_init import QnA, db, load_db
 
 # Flask: Initialize
 app = Flask(__name__)
@@ -28,9 +28,6 @@ def insert_title():
     
     else:
         return render_template("home_instructor.html")
-
-
-
 
 
 @app.route('/insert_GO', methods=['POST'])
@@ -78,7 +75,8 @@ param_count=0
 @app.route('/check_param_type', methods=['POST'])
 def check_param_type():
     global param_count
-    
+    data.description=request.form['desc']
+    print data.description
     param_count=request.form['counter']
     print param_count   
     return render_template('check_param_type.html', param_count=range(int(param_count)))
@@ -93,6 +91,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
     
 params=[]
+varVal=1
 
 @app.route('/insert_params', methods=['POST'])
 def insert_params():
@@ -114,19 +113,26 @@ def insert_params():
 def upload():
     textVar=[]
     imageVar=[]
+    filename=[]
+    global varVal
+    j=0
     # Get the name of the uploaded file
     for i in range(param_count):
         if params[i]==0:
-            textVar.append(request.form['text_file'+str(i)])
-            print textVar[i]
+            request.form.getlist('text_file')
+                
         else:
-            imageVar=request.files['image_file'+str(i)]
-            filename = secure_filename(imageVar.filename)
+            imageVar=request.files.getlist('image_file')
+            print imageVar
+            filename.append(secure_filename(imageVar[j].filename))
             # Move the file form the temporal folder to
             # the upload folder we setup
-            imageVar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    return render_template('check_varations.html')
-      
+            imageVar[j].save(os.path.join(app.config['UPLOAD_FOLDER'], filename[j]))
+            j=j+1
+            print imageVar
+    varVal = int(request.form.get('param_var'))
+    print varVal
+    return render_template('check_variations.html', varVal=varVal)
                 
                 
 @app.route('/insert_choices', methods=['POST'])

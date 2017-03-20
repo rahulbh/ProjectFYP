@@ -1,5 +1,5 @@
-function deleteRow(row)
-{
+function deleteRow(row, varVal)
+{   console.log('double hi');
     var i=row.parentNode.parentNode.rowIndex;
     document.getElementById('POITable').deleteRow(i);
 }

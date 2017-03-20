@@ -1,14 +1,17 @@
-function deleteRow(row)
+function deleteRow(row, varVal)
 {
+    console.log('double hello');
+    console.log(varVal)
     var i=row.parentNode.parentNode.rowIndex;
-    document.getElementById('POITable').deleteRow(i);
+    document.getElementById('POITable'+varVal).deleteRow(i);
 }
 
 
-function insRow()
+function insRow(varVal)
 {
     console.log( 'hi');
-    var x=document.getElementById('POITable');
+    console.log(varVal)
+    var x=document.getElementById('POITable'+varVal);
     var new_row = x.rows[1].cloneNode(true);
     var len = x.rows.length;
     new_row.cells[0].innerHTML = len;
