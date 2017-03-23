@@ -12,7 +12,7 @@ class QnA(db.Model):
     description = db.Column(db.TEXT)
     remarks = db.Column (db.String(2048))
     ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
-    ans = db.Column (postgresql.ARRAY(db.String(64), dimensions=2))
+    ans = db.Column (postgresql.ARRAY(db.String(64), dimensions=2),default=0)
     
 def load_db(db):
     """Create database tables and insert records"""

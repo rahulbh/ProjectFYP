@@ -4,6 +4,8 @@ from wtforms import Form, RadioField
 import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
 from db_init import QnA, db, load_db
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects import postgresql
 
 # Flask: Initialize
 app = Flask(__name__)
@@ -61,6 +63,7 @@ def add_question():
 class QuestionDesc(Form):
         desc = TextAreaField('desc', [validators.Required("Please enter Description.")])
         counter = TextField('counter')
+        group = TextField('group')
         submit = SubmitField('submit')
         
         
@@ -72,10 +75,18 @@ def insert_question_text():
     return render_template('insert_question_text.html', form=form)
     
 param_count=0
+hasParam=0
+
 @app.route('/check_param_type', methods=['POST'])
 def check_param_type():
-    global param_count
+    global param_count, hasParam
     data.description=request.form['desc']
+    data.questionGroup=request.form['group']
+    counter=request.form['counter']
+    if (counter>0):
+        hasParam=1
+               
+    print 'HasParam:', hasParam
     print data.description
     param_count=request.form['counter']
     print param_count   
@@ -105,21 +116,23 @@ def insert_params():
         params.append(request.form[str(i)])
         #INSERT PARAMS INTO DATABASE
         params[i]=int(params[i])
+    print params    
     return render_template('insert_params.html', params=params)
 
+textVar=[]
+imageVar=[]
+filename=[]
 
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
-    textVar=[]
-    imageVar=[]
-    filename=[]
+    global textVar, imageVar, filename
     global varVal
     j=0
     # Get the name of the uploaded file
     for i in range(param_count):
         if params[i]==0:
-            request.form.getlist('text_file')
+            textVar=request.form.getlist('text_file')
                 
         else:
             imageVar=request.files.getlist('image_file')
@@ -134,10 +147,51 @@ def upload():
     print varVal
     return render_template('check_variations.html', varVal=varVal)
                 
+global question
+question=[]
+
+data.ques=list(list())
                 
-@app.route('/insert_choices', methods=['POST'])
+@app.route('/question_congrats', methods=['POST'])
 def insert_choices():
-    return render_template('insert_choices.html')
+    global params, question, db
+    print varVal, params, hasParam
+    print 'WALAO starts!'
+    i,j = 0,0
+    for var in range(varVal):
+        for param in params:
+            question.append(hasParam)
+            print question
+            question.append(var)
+            print question
+            question.append(param)
+            if param==0:
+                question.append('text')
+                print question
+                question.append(textVar[i])
+                print question
+                i=i+1
+            else:
+                question.append('image')
+                print question
+                question.append(imageVar[j])
+                print question
+                j=j+1
+            data.ques.append(question)
+            question=[]
+    print data.ques       
+    db.session.add((QnA(questionNo=890,questionGroup=data.questionGroup, description=data.description, ques=data.ques)))
+    db.session.commit()
+    
+    return render_template('question_congrats.html')
+
+# @app.route('/question_congrats', methods=['POST'])
+# def question_congrats():
+#     
+#     return render_template('question_congrats.html')
+
+
+
 
 if __name__=='__main__':
     app.config['SQLALCHEMY_ECHO'] = True
