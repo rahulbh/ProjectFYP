@@ -38,8 +38,24 @@
 
 This wizard allows you to add a new question quickly and easily. You can set several options now. 
 </p>
+<script type="text/javascript">
+  function change_radio_name(){
+  var varVal=document.getElementsByName('right\d');
+  // for loop on call by class
+  
+    for(var i = 0; i<varVal[0].value; i++)
+    {
+      var initial_html = document.getElementsByClassName("var_ans_fields")[0].innerHTML;
+      console.log(initial_html);
+    document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Enter Answer Param Value: <input type="text" name="text_ans" class="ans"><br /><br />';
+  }
+}
+
+
+</script>
 <form action="question_congrats" method="post">
 {% autoescape false %}
+{% if (type == 'MCQ'): %}
 {% for i in range(varVal): %}
 Answer Table for Variation {{ i+1 }} :
 <div id="POItablediv">
@@ -52,7 +68,7 @@ Answer Table for Variation {{ i+1 }} :
             Answer
           </td>
           <td>
-            Right
+            Right Answer
           </td>
           <td>
             
@@ -63,14 +79,47 @@ Answer Table for Variation {{ i+1 }} :
         </thead>
         <tr>
             <td>1</td>
-            <td><input size=25 type="text" id="latbox"/></td>
-            <td><input type="radio" name="right"></td>
+            <td><input size=25 type="text" id="latbox" name="value{{ i }}"/></td>
+            <td><input type="radio" name="right{{ i }}" value="1"></td>
             <td><input type="button" id="delPOIbutton" value="Delete" onclick="deleteRow(this, {{ i }})"/></td>
             <td><input type="button" id="addmorePOIbutton" value="Add More Choices" onclick="insRow({{ i }})"></td>
         </tr>
     </table>
     <br><br><br>
 {% endfor %}
+{% else: %}
+{% for i in range(varVal): %}
+Answer Table for Variation {{ i+1 }} :
+<div id="POItablediv">
+    <table id="POITable{{ i }}" border="1">
+        <thead>
+        <td>
+          
+        </td>
+          <td>
+            Answer
+          </td>
+          <td>
+            Right Answer
+          </td>
+          <td>
+            
+          </td>
+          <td>
+            
+          </td>
+        </thead>
+        <tr>
+            <td>1</td>
+            <td><input size=25 type="text" id="latbox" name="value{{ i }}" /></td>
+            <td><input type="radio" name="right{{ i }}" value="1"></td>
+            <td><input type="button" id="delPOIbutton" value="Delete" onclick="deleteRow(this, {{ i }})"/></td>
+            <td><input type="button" id="addmorePOIbutton" value="Add More Choices" onclick="insRow({{ i }})"></td>
+        </tr>
+    </table>
+    <br><br><br>
+{% endfor %}
+{% endif %}
 <button type="submit">Next</button>
 </form>
 </div><br><br><br><br><br><br><br>
@@ -85,8 +134,6 @@ Answer Table for Variation {{ i+1 }} :
    </footer>
   </div>
 
-<!-- <script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script> -->
 <script type="text/javascript" src="{{ url_for('static', filename='add_tablerow.js')}}"'></script>
 
 

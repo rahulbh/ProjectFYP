@@ -41,7 +41,7 @@ This wizard allows you to add a new question quickly and easily. You can set sev
     var radioVal=document.getElementsByName('text');
     if (radioVal[0].checked) {
       alert("You selected YES!");
-      $('#number_var').html('Enter Number of Variations: <select name="param_var" onchange="add_text_var();add_image_var();"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>');
+      $('#number_var').html('Enter Number of Variations: <select name="param_var" onchange="add_text_var();add_image_var();add_ans_fields();"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>');
     }
     else{
      $('#number_var').html(''); 
@@ -73,6 +73,7 @@ function add_image_var(){
 		document.getElementsByClassName("var_img_fields")[x].innerHTML = initial_html + 'Upload Param Image: <input type="file" name="image_file" class="params"><br /><br />';
 	}
 }
+}
 
 function add_ans_fields(){
   var varVal=document.getElementsByName('param_var');
@@ -80,12 +81,10 @@ function add_ans_fields(){
   
     for(var i = 0; i<varVal[0].value; i++)
     {
-      var initial_html = document.getElementsByClassName("var_ans_fields")[x].innerHTML;
+      var initial_html = document.getElementsByClassName("var_ans_fields")[0].innerHTML;
       console.log(initial_html);
-    document.getElementsByClassName("var_ans_fields")[x].innerHTML = initial_html + 'Upload Param Image: <input type="file" name="image_file" class="params"><br /><br />';
+    document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Enter Answer Param Value: <input type="text" name="text_ans" class="ans"><br /><br />';
   }
-
-
 }
 </script>
 {% autoescape false %}
