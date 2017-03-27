@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html ng-app="add_question">
+<head>
+<title>{{ title }}</title>
+<meta charset="utf-8">
+ <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> 
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">-->
+</head>
+<body>
+<div id="wrapper">
+  <header>
+ <img src="/static/ntu_logo.jpg" alt="NTU logo" height="102" width="300" >
+  </header>
+  <div id="leftcolumn">
+  <nav>
+    <ul>
+      <li><a href="students.html">Students</a></li>
+      <br>
+      <li><a href="assessments">Assessments</a></li>
+  </ul>
+  </nav>  
+  </div>
+  <div id="rightcolumn">
+    <div class="content"> 
+    <!--<div ng-view>    </div>-->
+          <span class="close">&times;</span>
+    <h4>Add New Question</h4>
+    <div id="leftcolumn">
+    <img src="/static/wizard_add_question.jpg" height="205"></div>
+    <div id="rightcolumn">
+    <p>
+
+This wizard allows you to add a new question quickly and easily. You can set several options now. 
+</p>
+  
+
+    <script type="text/javascript">
+
+ function add_param_options(){
+    var radioVal=document.getElementsByName('text');
+    if (radioVal[0].checked) {
+      alert("You selected YES!");
+      $('#number_var').html('Enter Number of Variations: <select name="param_var" onchange="add_text_var();add_image_var();"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>');
+    }
+    else{
+     $('#number_var').html(''); 
+    }
+  }
+
+function add_text_var(){
+	var varVal=document.getElementsByName('param_var');
+	//for loop on call by class
+	for(var x = 0; x < document.getElementsByClassName("var_text_fields").length; x++){
+		for(var i = 0; i<varVal[0].value-1; i++)
+		{
+			var initial_html = document.getElementsByClassName("var_text_fields")[x].innerHTML;
+			console.log(initial_html);
+			document.getElementsByClassName("var_text_fields")[x].innerHTML = initial_html + 'Enter Text Param Value: <input type="text" name="text_file" class="params"><br /><br />';
+		}
+	}
+
+}
+
+function add_image_var(){
+	var varVal=document.getElementsByName('param_var');
+	// for loop on call by class
+	for(var x = 0; x < document.getElementsByClassName("var_img_fields").length; x++){
+		for(var i = 0; i<varVal[0].value-1; i++)
+		{
+			var initial_html = document.getElementsByClassName("var_img_fields")[x].innerHTML;
+			console.log(initial_html);
+		document.getElementsByClassName("var_img_fields")[x].innerHTML = initial_html + 'Upload Param Image: <input type="file" name="image_file" class="params"><br /><br />';
+	}
+}
+
+function add_ans_fields(){
+  var varVal=document.getElementsByName('param_var');
+  // for loop on call by class
+  
+    for(var i = 0; i<varVal[0].value; i++)
+    {
+      var initial_html = document.getElementsByClassName("var_ans_fields")[x].innerHTML;
+      console.log(initial_html);
+    document.getElementsByClassName("var_ans_fields")[x].innerHTML = initial_html + 'Upload Param Image: <input type="file" name="image_file" class="params"><br /><br />';
+  }
+
+
+}
+</script>
+{% autoescape false %}
+<h2>{{ params|length }}</h2>
+<form action="upload" method="post" enctype="multipart/form-data">
+    Do you want Variations in these Parameters?
+	Yes:
+    <input type="radio" class="var" name="text" value="yes_var" onclick="add_param_options();">
+    No: 
+    <input type="radio" class="var" name="text" value="no_var" onclick="add_param_options();" checked>
+
+
+
+    <div id="number_var">
+
+    </div>
+
+
+<div id="number_var"></div>
+{% for i in range(params|length) : %} 
+ {% if params[i]==0: %} 
+ Enter Text Param({{ i+1 }}) Value : <input type="text" name="text_file" class="params"><br /><br />
+ <div class='var_text_fields'></div>
+
+ {% else: %} 
+ 
+ Upload Param({{ i+1 }}) Image: <input type="file" name="image_file" class="params"><br /><br />
+
+ <div class='var_img_fields'></div>
+  {% endif %}
+  {% endfor %}
+
+
+<div class='var_ans_fields'> 
+
+</div>
+{% endautoescape %}
+<input type="submit" value="submit"> 
+</form>
+</div><br><br><br><br><br><br><br>
+  </div>
+ 
+    </div></div>
+
+    </div><br><br><br><br><br><br><br><br></div></div>
+    <footer>
+<br><i> &copy; 2017 NANYANG TECHNOLOGICAL UNIVERSITY</i>  
+   </footer>
+  </div>
+
+</body>
+</html>
+

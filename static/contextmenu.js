@@ -1,8 +1,8 @@
 $(document).ready(function() {
 
 
-    if ($("#desc").addEventListener) {
-        $("#desc").addEventListener('contextmenu', function(e) {
+    if ($("#test").addEventListener) {
+        $("#test").addEventListener('contextmenu', function(e) {
             alert("You've tried to open context menu"); //here you draw your own menu
             e.preventDefault();
         }, false);
@@ -10,7 +10,7 @@ $(document).ready(function() {
 
         //document.getElementById("test").attachEvent('oncontextmenu', function() {
         //$(".test").bind('contextmenu', function() {
-            $('body').on('contextmenu', 'a.desc', function() {
+            $('body').on('contextmenu', 'a.test', function() {
 
 
             //alert("contextmenu"+event);

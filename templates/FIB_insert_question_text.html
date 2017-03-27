@@ -43,7 +43,8 @@ This wizard allows you to add a new question quickly and easily. You can set sev
         <div class="hide" id="rmenu">
             <ul>
                 <li>
-                    <a href="" onclick="insertP();" class="my-link">Add a parameter</a>
+                    <a href="" onclick="insertQP();" class="my-link">Add a question parameter</a><br>
+                    <a href="" onclick="insertAP();" class="my-link">Add a answer parameter</a>
                 </li>
             </ul>
         </div>
@@ -54,7 +55,8 @@ This wizard allows you to add a new question quickly and easily. You can set sev
 </a></div>
   * Right click in the field below to add a parameter in question description
 
-<input type="text" name="counter" id="counter" />
+<input type="text" name="q_counter" id="counter" />
+<input type="text" name="a_counter" id="counter" />
 <br> <br> <br>
 
 Which group does the question belong to? 
@@ -73,15 +75,18 @@ Which group does the question belong to?
    </footer>
   </div>
 
-<!--<script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>-->
 <script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script>
 <script type="text/javascript" src="{{ url_for('static', filename='add_tablerow.js')}}"'></script>
 <script type="text/javascript">
-    function insertP()
+    function insertQP()
     {
    $('#test2').append(' %%P%% ')
     }
    
+    function insertAP()
+    {
+   $('#test2').append(' %%ANS%% ')
+    }
 </script>
 <script type="text/javascript">
   $(function() {

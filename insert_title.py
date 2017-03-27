@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from wtforms import Form, RadioField
 import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
-from db_init import QnA, db, load_db
+from db_init_final import QnA, db, load_db
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects import postgresql
 
@@ -66,31 +66,50 @@ class QuestionDesc(Form):
         group = TextField('group')
         submit = SubmitField('submit')
         
+type=0
         
 @app.route('/insert_question_text', methods=['POST'])
 def insert_question_text():
-    #type=request.form['type']
+    global type
+    type=request.form['type']
     form=QuestionDesc()
-    #if(type=='MCQ'):
-    return render_template('insert_question_text.html', form=form)
+    if(type=='MCQ' or type=='MCMR'):
+        return render_template('insert_question_text.html', form=form)
+    elif(type=='FIB'):
+        return render_template('FIB_insert_question_text.html', form=form)
+    else:
+        return render_template('SA_insert_question_text.html', form=form)
+        
     
 param_count=0
 hasParam=0
+acounter=0
 
 @app.route('/check_param_type', methods=['POST'])
 def check_param_type():
-    global param_count, hasParam
+    global param_count, hasParam, acounter
     data.description=request.form['desc']
     data.questionGroup=request.form['group']
-    counter=request.form['counter']
-    if (counter>0):
-        hasParam=1
-               
-    print 'HasParam:', hasParam
-    print data.description
-    param_count=request.form['counter']
-    print param_count   
-    return render_template('check_param_type.html', param_count=range(int(param_count)))
+    if request.referrer=='http://127.0.0.1:5000/insert_question_text.html':
+        counter=request.form['counter']
+        if (counter>0):
+            hasParam=1
+        param_count=int(counter)
+        print 'HasParam:', hasParam
+        print data.description
+        print param_count 
+        return render_template('check_param_type.html', param_count=range(param_count))
+    elif request.referrer=='http://127.0.0.1:5000/FIB_insert_question_text.html':
+        qcounter=int(request.form.get('qcounter'))
+        acounter=int(request.form.get('acounter'))
+        if (qcounter>0):
+            hasParam=1
+        param_count=qcounter
+        print 'HasParam:', hasParam
+        print data.description
+        print param_count 
+        return render_template('FIB check_param_type.html', param_count=range((param_count)))
+  
     
 # This is the path to the upload directory
 app.config['UPLOAD_FOLDER'] = 'uploads/'
@@ -107,17 +126,20 @@ varVal=1
 @app.route('/insert_params', methods=['POST'])
 def insert_params():
     global params
-    global param_count
+    global param_count, acounter
     #print(range(int(param_count)))
     print param_count
-    param_count=int(param_count)
+    print acounter
     print type(param_count)
     for i in range(param_count):
         params.append(request.form[str(i)])
         #INSERT PARAMS INTO DATABASE
         params[i]=int(params[i])
-    print params    
-    return render_template('insert_params.html', params=params)
+    print params
+    if request.referrer=='http://127.0.0.1:5000/FIB_check_param_type.html': 
+        return render_template('insert_params.html', params=params)
+    else:
+        return render_template('FIB_insert_params.html', params=params, acounter=acounter)
 
 textVar=[]
 imageVar=[]
@@ -180,8 +202,8 @@ def insert_choices():
             data.ques.append(question)
             question=[]
     print data.ques       
-    db.session.add((QnA(questionNo=890,questionGroup=data.questionGroup, description=data.description, ques=data.ques)))
-    db.session.commit()
+    #db.session.add((QnA(questionNo=890,questionGroup=data.questionGroup, description=data.description, ques=data.ques)))
+    #db.session.commit()
     
     return render_template('question_congrats.html')
 
