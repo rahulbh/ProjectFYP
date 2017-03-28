@@ -5,8 +5,7 @@ import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
 from db_init_final import QnA, db, load_db, MCQMCMR, FIB
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql.functions import func
-
+from sqlalchemy.sql.functions import func, Select
 
 
 #from insert_QnA_data import insert_MCQ_QnA
@@ -36,24 +35,46 @@ def insert_title():
         return render_template("home_instructor.html")
     
 
+quesTop = 0
+seq = 0
+
 #This function is to generate a table of available number of question from each group, 
 #so that the instructor can select the number of questions to pick from for each topic
-@app.route('/generate_questions')       
-def generate_questions():
-    global db, QnA
+@app.route('/question_picker')       
+def question_picker():
+    global db, QnA,  quesTop, seq
     quesType = list(list())
     quesTop = db.session.query(QnA.questiongroup, db.func.count(QnA.questiongroup).label('count')).group_by(QnA.questiongroup).all()
-    seq = [x[0] for x in quesType]
+    print quesTop
+    seq = [x[0] for x in quesTop]
     for i in seq:
-        quesType.append(db.session.query(QnA.questiongroup, db.func.count(QnA.questiontype).label('count')).filter_by(questiongroup=i).group_by(QnA.questiontype).all())
+        quesType.append(db.session.query(QnA.questiontype, db.func.count(QnA.questiontype).label('count')).filter_by(questiongroup=i).group_by(QnA.questiontype).all())
     #quesTop = QnA.query.all()
     print quesTop
     print quesType
     return render_template('question_picker.html', quesTop=quesTop, quesType= quesType)
 
-@app.route('/generate_assessment', methods='POST')       
+
+@app.route('/generate_assessment', methods=['POST'])
 def generate_assessment():
+    global quesTop, seq, db, QnA
+    quesTotal = list()
+    #qQues = list(list())
+    ques_dict = dict()
+    y = list()
+    value = [x[0] for x in quesTop]  #Generate list for the number of questions for each topic
+    print value
+    for i in range(len(seq)):
+        quesTotal.append(request.form.get('quesTotal'+str(i)))
+        print 'QUESTOTATL', quesTotal
+        y.append(db.session.query(QnA.questionno).filter_by(questiongroup = value[i]).order_by(func.random()).limit(quesTotal[i]))
+        print y
+        ques_dict[seq[i]] = y
     return render_template('sample_assessment.html')
+        
+         
+        
+#    return render_template('sample_assessment.html')
 
 @app.route('/insert_GO', methods=['POST'])
 def insert_GO():
