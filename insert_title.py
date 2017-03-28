@@ -5,7 +5,9 @@ import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
 from db_init_final import QnA, db, load_db, MCQMCMR, FIB
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects import postgresql
+from sqlalchemy.sql.functions import func
+
+
 
 #from insert_QnA_data import insert_MCQ_QnA
 
@@ -23,7 +25,7 @@ with app.test_request_context():
     
 data=QnA()
 
-
+@app.route('/')
 def insert_title():
     #title=request.form['title']
     title="SAMPLE QUIZ"
@@ -32,7 +34,26 @@ def insert_title():
     
     else:
         return render_template("home_instructor.html")
+    
 
+#This function is to generate a table of available number of question from each group, 
+#so that the instructor can select the number of questions to pick from for each topic
+@app.route('/generate_questions')       
+def generate_questions():
+    global db, QnA
+    quesType = list(list())
+    quesTop = db.session.query(QnA.questiongroup, db.func.count(QnA.questiongroup).label('count')).group_by(QnA.questiongroup).all()
+    seq = [x[0] for x in quesType]
+    for i in seq:
+        quesType.append(db.session.query(QnA.questiongroup, db.func.count(QnA.questiontype).label('count')).filter_by(questiongroup=i).group_by(QnA.questiontype).all())
+    #quesTop = QnA.query.all()
+    print quesTop
+    print quesType
+    return render_template('question_picker.html', quesTop=quesTop, quesType= quesType)
+
+@app.route('/generate_assessment', methods='POST')       
+def generate_assessment():
+    return render_template('sample_assessment.html')
 
 @app.route('/insert_GO', methods=['POST'])
 def insert_GO():
@@ -256,21 +277,19 @@ def insert_choices():
     if type=='MCQ' or type=='MCMR:':
         data.ans = insert_MCQ_QnA(varVal, answer)
         print data.ques, data.ans   
-        db.session.add((QnA(questionNo=890,questionGroup=data.questionGroup, questionType=type)))
-        db.session.add((MCQMCMR(questionNo=890,description=data.description, ques=data.ques, ans=data.ans)))
+        db.session.add((QnA(questionno=890,questiongroup=data.questionGroup, questiontype=type)))
+        db.session.add((MCQMCMR(questionno=890,description=data.description, ques=data.ques, ans=data.ans)))
         db.session.commit()
     elif type=='FIB' or type == 'SA':
         data.ans = insert_FIB_QnA(varVal, answer)
         print data.ans
-        db.session.add((QnA(questionNo=890,questionGroup=data.questionGroup, questionType=type)))
-        db.session.add((FIB(questionNo=890,description=data.description, ques=data.ques, ans=data.ans)))
+        db.session.add((QnA(questionno=890,questiongroup=data.questionGroup, questiontype=type)))
+        db.session.add((FIB(questionno=890,description=data.description, ques=data.ques, ans=data.ans)))
         db.session.commit()
     
     data,params,question,varVal=0,0,0,0
     return render_template('congrats.html')
-            
-            
-        
+
 
 
 # @app.route('/question_congrats', methods=['POST'])

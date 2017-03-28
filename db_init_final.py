@@ -8,9 +8,9 @@ db=SQLAlchemy()
 class QnA(db.Model):
     __tablename__ = 'QnA'
     
-    questionNo = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    questionGroup = db.Column(db.String(64))
-    questionType = db.Column(db.Enum('MCQ', 'MCMR', 'SA', 'FIB', name='type_enum'), nullable = False, default= 'MCQ')
+    questionno = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    questiongroup = db.Column(db.String(64))
+    questiontype = db.Column(db.Enum('MCQ', 'MCMR', 'SA', 'FIB', name='type_enum'), nullable = False, default= 'MCQ')
     #imgData = db.Column(db.String(256))
     #description = db.Column(db.TEXT, nullable = False)
     remarks = db.Column (db.String(2048))
@@ -24,21 +24,21 @@ class QnA(db.Model):
     
 class MCQMCMR(db.Model):
     __tablename__ = 'MCQMCMR'
-    questionNo = db.Column(db.Integer,  db.ForeignKey('QnA.questionNo'),primary_key=True)
+    questionno = db.Column(db.Integer,  db.ForeignKey('QnA.questionno'),primary_key=True)
     ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
     description = db.Column(db.TEXT, nullable = False)
     ans = db.Column (postgresql.ARRAY(db.String(64), dimensions=2),default=0)
     
 class SA(db.Model):
     __tablename__ = 'SA'
-    questionNo = db.Column(db.Integer, db.ForeignKey('QnA.questionNo'), primary_key=True)
+    questionno = db.Column(db.Integer, db.ForeignKey('QnA.questionno'), primary_key=True)
     ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
     description = db.Column(db.TEXT, nullable = False)
     ans = db.Column (postgresql.ARRAY(db.String(64), dimensions=2),default=0)
     
 class FIB(db.Model):
     __tablename__ = 'FIB'
-    questionNo = db.Column(db.Integer, db.ForeignKey('QnA.questionNo'), primary_key=True)
+    questionno = db.Column(db.Integer, db.ForeignKey('QnA.questionno'), primary_key=True)
     ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
     description = db.Column(db.TEXT, nullable = False)
     ans = db.Column (postgresql.ARRAY(db.String(64), dimensions=2),default=0)
@@ -55,12 +55,50 @@ def load_db(db):
 
 
     
-    testcases=[{"questionNo":801, "questionGroup":"General Science","description":"This question does not relate to the image! Suppose that you plucked %%P1%% apples,and Steve took away three. How many apples do you have?"\
+    testcases=[{"questionno":801, "questiongroup":"General Science","description":"This question does not relate to the image! Suppose that you plucked %%P1%% apples,and Steve took away three. How many apples do you have?"\
             ,"ques":[['1','0','0','text','five'],['1','1','0','text','six']],"ans":[['0','0','10','0'],['0','1','11','0'],['0','2','2','1'],['0','3','13','0'],['0','4','14','0'],['1','0','21','0'],\
-                                                                      ['1','1','22','0'],['1','2','23','0'],['1','3','24','0'],['1','4','All of the Above','0'],['1','5','None of the Above','1']],"remarks":"Hello 801"}]
+                                                                      ['1','1','22','0'],['1','2','23','0'],['1','3','24','0'],['1','4','All of the Above','0'],['1','5','None of the Above','1']],"remarks":"Hello 801"},\
+                {"questionno":802,"questiongroup":"General Science","description":"Which scientist developed the theory of universal gravitation?"\
+            ,"ques":[['0','0','0','0','0'],['0','0','0','0','0']],"ans":[['0','0','Issac Newtown','0'],['0','1','Charles Darwin','1'],['0','2','Albert Einstein','0'],['0','3','Michael Faraday','0']],"remarks":"Hello 802"},\
+           \
+           {"questionno":803,"questiongroup":"General Science","description":"Which scientist created e=mc<sup>2</sup>??"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','Issac Newtown','0'],['0','1','Charles Darwin','0'],['0','2','Albert Einstein','1'],['0','3','Michael Faraday','0']],"remarks":"Hello 803"},\
+           \
+           {"questionno":804,"questiongroup":"Air and Atmosphere","description":"Nitrogen is obtained from fractional distillation of liquefied air at about"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','196 C','0'],['0','1','186 C','1'],['0','2','176 C','0'],['0','3','166 C','0']],"remarks":"Hello 804"},\
+           \
+           {"questionno":805,"questiongroup":"Air and Atmosphere","description":"A greenhouse gas that absorbs energy and maintains earth's temperature is"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','carbon dioxide','1'],['0','1','oxygen','0'],['0','2','nitrogen','0'],['0','3','argon','0']],"remarks":"Hello 805"},\
+           \
+           {"questionno":806,"questiongroup":"Air and Atmosphere","description":"Main constituent in air is"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','nitrogen','1'],['0','1','oxygen','0'],['0','2','argon','0'],['0','3','water vapor','0']],"remarks":"Hello 806"},\
+           \
+           {"questionno":807,"questiongroup":"Air and Atmosphere","description":"On cooling, a liquid will be changed into"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','dense','0'],['0','1','solid','1'],['0','2','semi-solid','0'],['0','3','liquid','0']],"remarks":"Hello 807"},\
+           \
+           {"questionno":808,"questiongroup":"Air and Atmosphere","description":"Combustion cannot take place without"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','water','0'],['0','1','carbon','0'],['0','2','air','1'],['0','3','zinc','0']],"remarks":"Hello 808"},\
+           \
+           {"questionno":809,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"Remaining solid on filter paper is known as"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','solution','0'],['0','1','stone','0'],['0','2','particles','0'],['0','3','residue','1']],"remarks":"Hello 809"},\
+           \
+           {"questionno":810,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"Letter used to identify an element in periodic table is known as"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','formula','0'],['0','1','idea','0'],['0','2','symbol','1'],['0','3','hint','0']],"remarks":"Hello 810"},\
+           \
+           {"questionno":811,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"A component of plant cell that is absent in animal cell is known as"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','cell membrane','0'],['0','1','cytoplasm','0'],['0','2','nucleus','0'],['0','3','Cellulose','1']],"remarks":"Hello 811"},\
+           \
+           {"questionno":812,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"For lowering body tube until objective is 0.25 inches of object, we use"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','illumination','0'],['0','1','Stage','0'],['0','2','diaphragm','0'],['0','3','coarse focus','1']],"remarks":"Hello 812"},\
+           \
+           {"questionno":813,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"Smallest cells present in human body are"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','red blood','0'],['0','1','brain cells','1'],['0','2','egg-cell','0'],['0','3','nerve','0']],"remarks":"Hello 813"}];
             
+    
+    
+    
     for t in testcases:
-        db.session.add(QnA(questionNo=t['questionNo'], questionGroup=t['questionGroup'], questionType = 'MCQ', remarks=t['remarks']))
-        db.session.add(MCQMCMR(questionNo=t['questionNo'], description=t['description'], ques=t['ques'], ans=t['ans']))
+        db.session.add(QnA(questionno=t['questionno'], questiongroup=t['questiongroup'], questiontype = 'MCQ', remarks=t['remarks']))
+        db.session.add(MCQMCMR(questionno=t['questionno'], description=t['description'], ques=t['ques'], ans=t['ans']))
         db.session.commit()
 

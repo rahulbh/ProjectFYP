@@ -34,33 +34,37 @@
     <div id="leftcolumn">
     <img src="/static/wizard_add_question.jpg" height="205"></div>
     <div id="rightcolumn">
-    <p>
-
-This wizard allows you to add a new question quickly and easily. You can set several options now. 
-</p>
-  
-        <!-- initially hidden right-click menu -->
-        <div class="hide" id="rmenu">
-            <ul>
-                <li>
-                    <a href="" onclick="insertP();" class="my-link">Add a parameter</a>
-                </li>
-            </ul>
-        </div>
+<table>
+  <thead>
+  <td>Question Group</td>
+  <td>Number of Questions</td>
+  <td>Number of Ques to pick</td>
+  <td>Which type</td>
+  </thead>
+  <tbody>
+  <form action="generate_assessment">
+    {% for instance in range(quesTop|length) %}
+    <tr>
+      <td>
+    {{ quesTop[instance].questiongroup }}
+    </td>
+    <td>
+    {{ quesTop[instance].count }}
+    </td>
+    <td>
+    <input type="Number" name="quesTotal{{ instance }}">
+    </td>
+    <!-- <td>
+      <select name='quesType'>
         
-<form action="check_param_type" method="post" id="choice_form"> 
-<div id="test1"><a href="javascript:void(0)" class="test">
-<textarea rows="5" cols="80" form="choice_form" id="test2" name="desc"></textarea>
-</a></div>
-  * Right click in the field below to add a parameter in question description
+      </select>
+    </td>
+     --></tr> 
+    {% endfor %}
+  </tbody>
+</table>
 
-<input type="text" name="counter" id="counter" />
-<br> <br> <br>
-
-Which group does the question belong to? 
-<input type="text" name="group">
-
-<button type="submit">Next</button>
+<button type="submit"> Next </button>
 </form>
 </div><br><br><br><br><br><br><br>
   </div>
@@ -76,24 +80,6 @@ Which group does the question belong to?
 <!--<script type="text/javascript" src="{{ url_for('static', filename='modal_load.js') }}"></script>-->
 <script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script>
 <script type="text/javascript" src="{{ url_for('static', filename='add_tablerow.js')}}"'></script>
-<script type="text/javascript">
-    function insertP()
-    {
-   $('#test2').append(' %%P%% ')
-    }
-   
-</script>
-<script type="text/javascript">
-  $(function() {
-    var clicks = 0;
-    $(".my-link").click(function() {
-        clicks++;
-        $.cookie('stored_clicks', clicks);
-        //alert($.cookie('stored_clicks'));
-    });
-});
-  document.getElementById('counter').value = $.cookie('stored_clicks');
-</script>
 
 </body>
 </html>   
