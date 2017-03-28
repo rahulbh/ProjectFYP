@@ -81,12 +81,11 @@ function add_ans_fields(){
   
     for(var i = 0; i<varVal[0].value; i++)
     {
-      for (var j=0; j<{{ acounter }}; j++)
-{
+
       var initial_html = document.getElementsByClassName("var_ans_fields")[0].innerHTML;
       console.log(initial_html);
     document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Enter Answer Param Value: <input type="text" name="text_ans" class="ans"><br /><br />';
-  }
+  
   }
 }
 </script>

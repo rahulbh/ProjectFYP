@@ -3,9 +3,10 @@ from werkzeug.utils import secure_filename
 from wtforms import Form, RadioField
 import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
-from db_init_final import QnA, db, load_db, MCQMCMR
+from db_init_final import QnA, db, load_db, MCQMCMR, FIB
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects import postgresql
+
 #from insert_QnA_data import insert_MCQ_QnA
 
 # Flask: Initialize
@@ -79,7 +80,7 @@ def insert_question_text():
     elif(type=='FIB'):
         return render_template('FIB_insert_question_text.html', form=form)
     else:
-        return render_template('SA_insert_question_text.html', form=form)
+        return render_template('insert_question_text.html', form=form)
         
     
 param_count=0
@@ -91,7 +92,7 @@ def check_param_type():
     global param_count, hasParam, acounter
     data.description=request.form['desc']
     data.questionGroup=request.form['group']
-    if type == 'MCQ' or type == 'MCMR':
+    if type == 'MCQ' or type == 'MCMR' or type == 'SA':
         counter=request.form['counter']
         if (counter>0):
             hasParam=1
@@ -137,19 +138,21 @@ def insert_params():
         #INSERT PARAMS INTO DATABASE
         params[i]=int(params[i])
     print params
-    if type == 'MCQ' or type == 'MCMR': 
+    if type == 'MCQ' or type == 'MCMR' : 
         return render_template('insert_params.html', params=params)
-    else:
+    elif type == 'FIB':
         return render_template('FIB_insert_params.html', params=params, acounter=acounter)
-
+    else:
+        return render_template('SA_insert_params.html', params=params)
+    
 textVar=[]
 imageVar=[]
 filename=[]
-ansVar = []
+ansVarFIBSA = []
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
-    global textVar, imageVar, filename, ansVar
+    global textVar, imageVar, filename, ansVarFIBSA
     global varVal
     j=0
     # Get the name of the uploaded file
@@ -167,12 +170,12 @@ def upload():
             j=j+1
             print imageVar
     varVal = int(request.form.get('param_var'))
-    ansVar = request.form.getlist('text_ans')
+    ansVarFIBSA = request.form.getlist('text_ans')
     print varVal
-    if type=='FIB':
+    if type=='FIB' or type == 'SA':
         return redirect(url_for('insert_choices'))
     else:
-        return render_template('check_variations.html', varVal=varVal, type=type)
+        return render_template('check_variations.html', varVal=varVal)
                 
 global question
 question=[]
@@ -203,6 +206,23 @@ def insert_MCQ_QnA(varVal,answer):
                 ans.append(answer)
                 answer=[]
         return ans
+    
+def insert_FIB_QnA(varVal,answer):
+        ans=list(list())
+        i=0
+        global ansVarFIBSA
+        print 'ANS varVal, answer',ans, varVal, ansVarFIBSA
+        for var in range(varVal):
+            print 'ANSWERS:', ansVarFIBSA
+            for ansNo in range(len(ansVarFIBSA)/varVal): 
+                answer.append(str(var))
+                print answer
+                answer.append(str(ansNo))
+                answer.append(str(ansVarFIBSA[i]))
+                i=i+1
+                ans.append(answer)
+                answer=[]
+        return ans
             
         
                 
@@ -212,7 +232,6 @@ def insert_choices():
     print varVal, params, hasParam, answer
     print 'WALAO starts!'
     i,j = 0,0
-    if type=='MCQ' or type=='MCMR:'
     for var in range(varVal):
         for param in params:
             question.append(str(hasParam))
@@ -234,15 +253,24 @@ def insert_choices():
                 j=j+1
             data.ques.append(question)
             question=[]
-    data.ans = insert_MCQ_QnA(varVal, answer)
-    print data.ques, data.ans   
-    db.session.add((QnA(questionNo=890,questionGroup=data.questionGroup, questionType=type)))
-    db.session.add((MCQMCMR(questionNo=890,description=data.description, ques=data.ques, ans=data.ans)))
-    db.session.commit()
+    if type=='MCQ' or type=='MCMR:':
+        data.ans = insert_MCQ_QnA(varVal, answer)
+        print data.ques, data.ans   
+        db.session.add((QnA(questionNo=890,questionGroup=data.questionGroup, questionType=type)))
+        db.session.add((MCQMCMR(questionNo=890,description=data.description, ques=data.ques, ans=data.ans)))
+        db.session.commit()
+    elif type=='FIB' or type == 'SA':
+        data.ans = insert_FIB_QnA(varVal, answer)
+        print data.ans
+        db.session.add((QnA(questionNo=890,questionGroup=data.questionGroup, questionType=type)))
+        db.session.add((FIB(questionNo=890,description=data.description, ques=data.ques, ans=data.ans)))
+        db.session.commit()
     
-    
+    data,params,question,varVal=0,0,0,0
     return render_template('congrats.html')
-
+            
+            
+        
 
 
 # @app.route('/question_congrats', methods=['POST'])
