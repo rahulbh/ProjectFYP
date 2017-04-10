@@ -41,7 +41,7 @@ This wizard allows you to add a new question quickly and easily. You can set sev
     var radioVal=document.getElementsByName('text');
     if (radioVal[0].checked) {
       alert("You selected YES!");
-      $('#number_var').html('Enter Number of Variations: <select name="param_var" onchange="add_text_var();add_image_var();add_ans_fields();"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>');
+      $('#number_var').html('Enter Number of Variations: <select name="param_var" onchange="add_text_var();add_image_var();add_ans_fields();" required><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>');
     }
     else{
      $('#number_var').html(''); 
@@ -81,14 +81,40 @@ function add_ans_fields(){
   
     for(var i = 0; i<varVal[0].value; i++)
     {
+      console.log('ANSWER VARIATION');
       for (var j=0; j<{{ acounter }}; j++)
 {
       var initial_html = document.getElementsByClassName("var_ans_fields")[0].innerHTML;
       console.log(initial_html);
-    document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Enter Answer Param Value: <input type="text" name="text_ans" class="ans"><br /><br />';
+    document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Enter Answer Param Value: <input type="text" name="text_ans" class="ans"><br />';
   }
   }
+
+  initial_html = document.getElementsByClassName("var_ans_fields")[0].innerHTML;
+  document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Answer Type<select name="ans_type" onchange="add_tolerance();"><option value="string">String</option><option value="integer">Integer</option><option value="float">Float</option></select><br /><div name="tol_add" class="tol_add"></div>';
+  
 }
+
+
+
+
+
+function add_tolerance(){
+  
+  // for loop on call by class
+  
+      var initial_html = document.getElementsByClassName("tol_add")[0].innerHTML;
+      var type=document.getElementsByName('ans_type');
+      console.log(type[0].value);
+      if(type[0].value=='float' || type[0].value=='integer'){
+    document.getElementsByClassName("tol_add")[0].innerHTML = initial_html + 'Enter Tolerance in Percent<input type="number" name="tolerance" step="0.0001">;'
+  }}
+
+
+
+
+
+
 </script>
 {% autoescape false %}
 <h2>{{ params|length }}</h2>
@@ -109,12 +135,12 @@ function add_ans_fields(){
 <div id="number_var"></div>
 {% for i in range(params|length) : %} 
  {% if params[i]==0: %} 
- Enter Text Param({{ i+1 }}) Value : <input type="text" name="text_file" class="params"><br /><br />
+ Enter Text Param({{ i+1 }}) Value : <input type="text" name="text_file" class="params" required><br /><br />
  <div class='var_text_fields'></div>
 
  {% else: %} 
  
- Upload Param({{ i+1 }}) Image: <input type="file" name="image_file" class="params"><br /><br />
+ Upload Param({{ i+1 }}) Image: <input type="file" name="image_file" class="params" required><br /><br />
 
  <div class='var_img_fields'></div>
   {% endif %}

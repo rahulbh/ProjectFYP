@@ -3,9 +3,10 @@ from werkzeug.utils import secure_filename
 from wtforms import Form, RadioField
 import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
-from db_init_final import QnA, db, load_db, MCQMCMR, FIB
+from db_init_final import QnA, db, load_db, MCQMCMR, FIB, Assessments
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.functions import func, Select
+import random
 
 
 #from insert_QnA_data import insert_MCQ_QnA
@@ -40,19 +41,7 @@ seq = 0
 
 #This function is to generate a table of available number of question from each group, 
 #so that the instructor can select the number of questions to pick from for each topic
-@app.route('/question_picker')       
-def question_picker():
-    global db, QnA,  quesTop, seq
-    quesType = list(list())
-    quesTop = db.session.query(QnA.questiongroup, db.func.count(QnA.questiongroup).label('count')).group_by(QnA.questiongroup).all()
-    print quesTop
-    seq = [x[0] for x in quesTop]
-    for i in seq:
-        quesType.append(db.session.query(QnA.questiontype, db.func.count(QnA.questiontype).label('count')).filter_by(questiongroup=i).group_by(QnA.questiontype).all())
-    #quesTop = QnA.query.all()
-    print quesTop
-    print quesType
-    return render_template('question_picker.html', quesTop=quesTop, quesType= quesType)
+
 
 
 @app.route('/generate_assessment', methods=['POST'])
@@ -65,35 +54,57 @@ def generate_assessment():
     value = [x[0] for x in quesTop]  #Generate list for the number of questions for each topic
     print value
     for i in range(len(seq)):
-        quesTotal.append(request.form.get('quesTotal'+str(i)))
+        quesTotal.append(int(request.form.get('quesTotal'+str(i))))
         print 'QUESTOTATL', quesTotal
-        y.append(db.session.query(QnA.questionno).filter_by(questiongroup = value[i]).order_by(func.random()).limit(quesTotal[i]))
+        
+        y.append(db.session.query(QnA.questionno).all())
+        #filter_by(questiongroup = value[i]).order_by(func.random())limit(quesTotal[i]))
+        
         print y
         ques_dict[seq[i]] = y
-    return render_template('sample_assessment.html')
+    return render_template('sample_assessment.html', ques_dict=ques_dict)
         
          
-        
+title  = ''
+random_ques=False
+random_ans=False
+max_time=0
+coursecode='EE0040'
+location='BEG'
 #    return render_template('sample_assessment.html')
 
 @app.route('/insert_GO', methods=['POST'])
 def insert_GO():
-    #random_ques=request.form['random_questions']
-    #random_ans=request.form['random_answers']
-    #max_time=request.form['time']
-    
+    #print request.form.get('random_questions')
+    #print request.form.get('random_answers')
+    global title, random_ans, random_ques, coursecode
+    title = request.form.get('title')
+    if request.form.get('random_questions')=='yes_display':
+        random_ques=True
+        #print 'Random Question'
+    if request.form.get('random_answers')=='yes_display':
+        random_ans=True
+        #print 'Random Answer'    
+    max_time=request.form.get('time')
+    print 'Time',max_time
     #PUT VALUES IN DATABSE
-        
+    
     return render_template("custom_messages.html")
 
 @app.route('/congrats', methods=['POST'])
 def congrats():
-    #random_ques=request.form['random_questions']
-    #random_ans=request.form['random_answers']
-    #max_time=request.form['time']
-    
-    #PUT VALUES IN DATABSE
-        
+    global location, max_time, message, coursecode, title, random_ques, random_ans
+    #PUT VALUES IN DATABASE
+    message=request.form.getlist('message')
+    if(len(message)>0):
+        if(message[0].len()>1):
+            message=message[0]
+            location='BEG'
+        elif(message[1].len()>1):
+            message=message[1]
+            location='END'
+    db.session.add(Assessments(coursecode=coursecode, message=message, location=location, title=title, duration=max_time, enabled=True, israndomq=random_ques, israndoma=random_ans))
+    db.session.commit()
     return render_template("congrats.html")
 
 @app.route('/assessments')
@@ -129,11 +140,13 @@ param_count=0
 hasParam=0
 acounter=0
 
+
 @app.route('/check_param_type', methods=['POST'])
 def check_param_type():
     global param_count, hasParam, acounter
     data.description=request.form['desc']
     data.questionGroup=request.form['group']
+    data.maxmarks=int(request.form.get('max_marks'))
     if type == 'MCQ' or type == 'MCMR' or type == 'SA':
         counter=request.form['counter']
         if (counter>0):
@@ -172,13 +185,12 @@ def insert_params():
     global params
     global param_count, acounter
     #print(range(int(param_count)))
-    print param_count
-    print acounter
+    print param_count #Number of Question Parameters
+    print acounter #Number of Answer Parameters
     #print type(param_count)
     for i in range(param_count):
-        params.append(request.form[str(i)])
-        #INSERT PARAMS INTO DATABASE
-        params[i]=int(params[i])
+        params.append(request.form[str(i)]) 
+        params[i]=int(params[i])  
     print params
     if type == 'MCQ' or type == 'MCMR' : 
         return render_template('insert_params.html', params=params)
@@ -211,9 +223,9 @@ def upload():
             imageVar[j].save(os.path.join(app.config['UPLOAD_FOLDER'], filename[j]))
             j=j+1
             print imageVar
-    varVal = int(request.form.get('param_var'))
+    varVal = int(request.form.get('param_var')) #Number of Variations
     ansVarFIBSA = request.form.getlist('text_ans')
-    print varVal
+    print varVal 
     if type=='FIB' or type == 'SA':
         return redirect(url_for('insert_choices'))
     else:
@@ -298,7 +310,7 @@ def insert_choices():
     if type=='MCQ' or type=='MCMR:':
         data.ans = insert_MCQ_QnA(varVal, answer)
         print data.ques, data.ans   
-        db.session.add((QnA(questionno=890,questiongroup=data.questionGroup, questiontype=type)))
+        db.session.add((QnA(questionno=890,questiongroup=data.questionGroup, questiontype=type, coursecode='EE0040', maxmarks=data.maxmarks)))
         db.session.add((MCQMCMR(questionno=890,description=data.description, ques=data.ques, ans=data.ans)))
         db.session.commit()
     elif type=='FIB' or type == 'SA':

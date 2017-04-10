@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="replace">
+<head>
+	<title>Question Page</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+</head>
+<body>
+<!-- <ol> -->
+{% autoescape false %}
+
+{% for key, value in ques_dict.iteritems() %}
+            <dt>{{ key }}</dt>
+	{% for key2 in value %}
+		
+            <dd>{{ key2 }}</dd>
+            {% endfor %}
+      {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endautoescape %}
+<!-- </ol> -->
+	<input type="submit" name="submit">
+</form>
+<!-- <script type="text/javascript" src="angular.min.js"></script> -->
+<!-- <script type="text/javascript" src="app.js"></script> -->
+</body>
+</html>

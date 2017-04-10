@@ -5,6 +5,10 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> 
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='popup.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='popup.css') }}"></script>
+
 </head>
 <body>
 <div id="wrapper">
@@ -21,6 +25,73 @@
   </nav>	
   </div>
   <div id="rightcolumn">
+  <script type="text/javascript">
+
+   
+
+  function add_custom(){
+  var varVal=document.getElementsByName('add_message');
+  // for loop on call by class
+      var initial_html = document.getElementById("message_display").innerHTML;
+      console.log(initial_html);
+      if(varVal[1].value=='display_custom')
+      {
+    document.getElementById("message_display").innerHTML =  '<input type="radio" name="message_loc" id="message_loc" value="in_the_beg" onchange="message_add();"> Display message in the beginning<br><input type="radio" name="message_loc" id="message_loc" value="in_the_end" onchange="message_add();"> Display message in the End';  }}
+
+function message_add(){
+  var varVal=document.getElementsByName('message_loc');
+  // for loop on call by class
+      var initial_html = document.getElementById("message_display").innerHTML;
+      console.log(initial_html);
+      if(varVal[0].value=='in_the_beg')
+      {
+    document.getElementById("message_display").innerHTML = initial_html + '<a href="#" id="popuplinkb" class="popuplink">Click here to add the message displayed before the test</a><br><div class = "popup" id="popupa" >Enter Message to be displayed AFTER the test starts:<br><div id="text"><textarea rows="5" columns="40" form="myform" name="message_after"></textarea><input id="popupclosea" class="popupclose" type="Button" value="Close"/></div></div>';  }
+    else if(varVal[1].value=='in_the_end')
+    {
+      document.getElementById("message_display").innerHTML = initial_html + '<br><a href="#" class="popuplink" id="popuplinka">Click here to add the message displayed BEFORE the test</a> <div class = "popup" id="popupa" >Enter Message to be displayed AFTER the test starts:<br><div id="text"><textarea rows="5" columns="40" form="myform" name="message_after"></textarea><input id="popupclosea" class="popupclose" type="Button" value="Close"/></div></div>';  }
+    
+    }
+
+  
+
+ </script>
+ <script type="text/javascript">
+   $(function(){
+
+    $('#popuplinka').click(function(){
+        
+        
+        $('#popupa').show("slow");
+    
+    });
+    
+     $('#popupclosea').click(function(){
+        
+        
+        $('#popupa').hide("slow");
+    
+    });
+
+});
+
+  $(function(){
+
+    $('#popuplinkb').click(function(){
+        
+        
+        $('#popupb').show("slow");
+    
+    });
+    
+     $('#popupcloseb').click(function(){
+        
+        
+        $('#popupb').hide("slow");
+    
+    });
+
+});
+ </script>
     <div class="content"> 
         <!-- Trigger/Open The Modal -->
 <button id="myBtn"><img src="add_assess.png" height="15" width="15"><b> &nbsp; Add Assessment</b></button>
@@ -38,12 +109,15 @@
     <p>
 Do you want to add custom messages (for example: overview, instructions, thank-you messages, etc.) in your assessment? 
 </p>
-<form action="congrats" method="post"> 
-<input type="radio" name="random" id="random_questions" value="yes_display"> No, I don't want to add custom messages<br>
-<input type="radio" name="random" id="random_answers" value="yes_display"> Yes, I want to add custom messages<br> 
+<form action="congrats" method="post" id="myForm"> 
+<input type="radio" name="add_message" id="add_message" value="dont_display_custom"> No, I don't want to add custom messages<br>
+<input type="radio" name="add_message" id="add_message" value="display_custom" onchange='add_custom();'> Yes, I want to add custom messages<br> 
+<div id='message_display'>
+ 
+</div>
 
-<a href="">Click here to add the message displayed in the assessment page</a><br>
-<a href="">Click here to add the message displayed in the results page</a>
+
+
 
 <br>
 <button style="text-align: right;" type="submit">Next</button></div>

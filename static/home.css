@@ -35,7 +35,7 @@ header{ background-color:#ccaa66;
         text-align: left;
 }
 
-tr:nth-of-type(odd){background-color:#ccaa66;}
+tr:nth-of-type(odd){background-color:#80b3ff;}
 
 td{padding:5px ;}
 

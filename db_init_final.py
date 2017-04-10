@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import backref
 
 
 
@@ -14,9 +15,14 @@ class QnA(db.Model):
     #imgData = db.Column(db.String(256))
     #description = db.Column(db.TEXT, nullable = False)
     remarks = db.Column (db.String(2048))
+    maxmarks = db.Column(db.Integer, nullable = False)
+    coursecode  = db.Column (db.String(8), db.ForeignKey('Courses.coursecode'))
+    
     MCQQnA = db.relationship("MCQMCMR", uselist=False, backref=db.backref("QnA", uselist=False))
     SA = db.relationship("SA", uselist=False, backref=db.backref("QnA", uselist=False))
     FIB = db.relationship("FIB", uselist=False, backref=db.backref("QnA", uselist=False))
+    Courses = db.relationship('Courses', backref=db.backref('QnA', lazy='dynamic'))
+    #specassesments = db.relationship('SpecificAssessment', backref=db.backref('QnA', lazy='dynamic'))
     
     
     #ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
@@ -28,6 +34,7 @@ class MCQMCMR(db.Model):
     ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
     description = db.Column(db.TEXT, nullable = False)
     ans = db.Column (postgresql.ARRAY(db.String(64), dimensions=2),default=0)
+    partialmarks = db.Column(db.Integer, default=0)
     
 class SA(db.Model):
     __tablename__ = 'SA'
@@ -35,6 +42,8 @@ class SA(db.Model):
     ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
     description = db.Column(db.TEXT, nullable = False)
     ans = db.Column (postgresql.ARRAY(db.String(64), dimensions=2),default=0)
+    datatype = db.Column(db.Enum('String', 'Float', 'Integer', name='data_enum'), nullable = False, default= 'MCQ')
+    tolerance = db.Column(db.Float)
     
 class FIB(db.Model):
     __tablename__ = 'FIB'
@@ -42,7 +51,61 @@ class FIB(db.Model):
     ques = db.Column (postgresql.ARRAY(db.String(64), dimensions = 2))
     description = db.Column(db.TEXT, nullable = False)
     ans = db.Column (postgresql.ARRAY(db.String(64), dimensions=2),default=0)
+    datatype = db.Column(db.Enum('String', 'Float', 'Integer', name='data_enum'), nullable = False, default= 'MCQ')
+    tolerance = db.Column(db.Float)
     
+class Courses(db.Model):
+    __tablename__ = 'Courses'
+    coursecode = db.Column(db.String(8),  primary_key=True)
+    coursetitle  = db.Column (db.String(64))
+    
+class CourseGroupUsers(db.Model):
+    __tablename__ = 'CourseGroupUsers'
+    loginid = db.Column(db.String(15), db.ForeignKey('Users.userid'),  primary_key=True)
+    coursecode  = db.Column (db.String(8), db.ForeignKey('Courses.coursecode'), primary_key=True)
+    
+class Users(db.Model):
+    __tablename__ = 'Users'
+    userid = db.Column(db.String(15),  primary_key=True)
+    password = db.Column (db.String(32))
+    role = db.Column(db.Enum('INSTRUCT', 'STUD', 'ADMIN',  name='role_enum'), nullable = False, default= 'STUD')
+    superuser = db.Column (db.Boolean, default = False)
+    
+class Submission(db.Model):
+    __tablename__ = 'Submission'
+    coursecode  = db.Column (db.String(8), db.ForeignKey('Courses.coursecode'))
+    assessmentno = db.Column (db.Integer, db.ForeignKey('Assessments.assessmentno'))
+    loginid = db.Column(db.String(15), db.ForeignKey('Users.userid'))
+    uploadtime = db.Column (db.DateTime)
+    totalmark = db.Column (db.Float, nullable = False)
+    finalmark = db.Column (db.Float, nullable = False)
+    submissionno = db.Column (db.Integer, primary_key=True)
+    filename = db.Column (db.String(128))
+    
+class Assessments(db.Model):
+    __tablename__ = 'Assessments'
+    coursecode  = db.Column (db.String(8), db.ForeignKey('Courses.coursecode'))
+    assessmentno = db.Column (db.Integer, primary_key = True, autoincrement=True )
+    title = db.Column(db.String(128))
+    duration = db.Column (db.Integer, nullable = False)
+    enabled = db.Column (db.Boolean, default = True)
+    message = db.Column (db.String(8192))
+    location = db.Column (db.Enum('BEG', 'END', name='loc_enum'))
+    israndomq = db.Column(db.Boolean)
+    israndoma = db.Column(db.Boolean)
+    
+    assesments = db.relationship('SpecificAssessment', backref=db.backref('Assessments'))
+    submission = db.relationship('Submission', backref=db.backref('Assessments'))
+    
+class SpecificAssessment(db.Model):
+    __tablename__ = 'SpecificAssessment'
+    questiontype = db.Column(db.Enum('MCQ', 'MCMR', 'SA', 'FIB', name='type_enum'), primary_key = True)
+    assessmentno = db.Column (db.Integer, db.ForeignKey('Assessments.assessmentno'), primary_key = True)
+    questiongroup = db.Column(db.String(64), primary_key = True)
+    number = db.Column (db.Integer, nullable = False)
+    coursecode  = db.Column (db.String(8), db.ForeignKey('Courses.coursecode'), primary_key=True)
+    
+
 
     
     
@@ -51,10 +114,11 @@ def load_db(db):
     # Drop and re-create all the tables.
     db.drop_all()
     db.create_all()
-    
+    db.session.commit()
+    db.session.add(Courses(coursecode='EE0040', coursetitle='Engineers And Society'))
+    db.session.commit()
 
-
-    
+""" 
     testcases=[{"questionno":801, "questiongroup":"General Science","description":"This question does not relate to the image! Suppose that you plucked %%P1%% apples,and Steve took away three. How many apples do you have?"\
             ,"ques":[['1','0','0','text','five'],['1','1','0','text','six']],"ans":[['0','0','10','0'],['0','1','11','0'],['0','2','2','1'],['0','3','13','0'],['0','4','14','0'],['1','0','21','0'],\
                                                                       ['1','1','22','0'],['1','2','23','0'],['1','3','24','0'],['1','4','All of the Above','0'],['1','5','None of the Above','1']],"remarks":"Hello 801"},\
@@ -99,6 +163,6 @@ def load_db(db):
     
     for t in testcases:
         db.session.add(QnA(questionno=t['questionno'], questiongroup=t['questiongroup'], questiontype = 'MCQ', remarks=t['remarks']))
-        db.session.add(MCQMCMR(questionno=t['questionno'], description=t['description'], ques=t['ques'], ans=t['ans']))
-        db.session.commit()
+        db.session.add(MCQMCMR(questionno=t['questionno'], description=t['description'], ques=t['ques'], ans=t['ans']))"""
+    
 

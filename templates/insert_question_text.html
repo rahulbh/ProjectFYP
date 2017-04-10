@@ -6,7 +6,7 @@
 <title>{{ title }}</title>
 <meta charset="utf-8">
  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>     
 <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
 <script src="{{ url_for('static', filename='contextmenu.js') }}"></script> 
 <link rel="stylesheet" href="{{ url_for('static', filename='contextmenu.css') }}" /> 
@@ -59,6 +59,9 @@ This wizard allows you to add a new question quickly and easily. You can set sev
 
 Which group does the question belong to? 
 <input type="text" name="group">
+
+What's the maximum score for this question?
+<input type="number" name="max_marks">
 
 <button type="submit">Next</button>
 </form>
