@@ -91,7 +91,7 @@ function add_ans_fields(){
   }
 
   initial_html = document.getElementsByClassName("var_ans_fields")[0].innerHTML;
-  document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Answer Type<select name="ans_type" onchange="add_tolerance();"><option value="string">String</option><option value="integer">Integer</option><option value="float">Float</option></select><br /><div name="tol_add" class="tol_add"></div>';
+  document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Answer Type<select name="ans_type" onchange="add_tolerance();"><option value="String">String</option><option value="Integer">Integer</option><option value="Float">Float</option></select><br /><div name="tol_add" class="tol_add"></div>';
   
 }
 
@@ -106,7 +106,7 @@ function add_tolerance(){
       var initial_html = document.getElementsByClassName("tol_add")[0].innerHTML;
       var type=document.getElementsByName('ans_type');
       console.log(type[0].value);
-      if(type[0].value=='float' || type[0].value=='integer'){
+      if(type[0].value=='Float' || type[0].value=='Integer'){
     document.getElementsByClassName("tol_add")[0].innerHTML = initial_html + 'Enter Tolerance in Percent<input type="number" name="tolerance" step="0.0001">;'
   }}
 

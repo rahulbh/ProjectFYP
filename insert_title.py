@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from wtforms import Form, RadioField
 import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
-from db_init_final import QnA, db, load_db, MCQMCMR, FIB, Assessments
+from db_init_final import QnA, db, load_db, MCQMCMR, FIB, Assessments, SA
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.functions import func, Select
 import random
@@ -126,6 +126,7 @@ type=0
 @app.route('/insert_question_text', methods=['POST'])
 def insert_question_text():
     global type
+    print type
     type=request.form['type']
     form=QuestionDesc()
     if(type=='MCQ' or type=='MCMR'):
@@ -179,11 +180,12 @@ def allowed_file(filename):
     
 params=[]
 varVal=1
+type=''
 
 @app.route('/insert_params', methods=['POST'])
 def insert_params():
     global params
-    global param_count, acounter
+    global param_count, acounter, type
     #print(range(int(param_count)))
     print param_count #Number of Question Parameters
     print acounter #Number of Answer Parameters
@@ -206,7 +208,7 @@ ansVarFIBSA = []
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
-    global textVar, imageVar, filename, ansVarFIBSA
+    global textVar, imageVar, filename, ansVarFIBSA, type
     global varVal
     j=0
     # Get the name of the uploaded file
@@ -225,11 +227,13 @@ def upload():
             print imageVar
     varVal = int(request.form.get('param_var')) #Number of Variations
     ansVarFIBSA = request.form.getlist('text_ans')
+    data.tolerance=request.form.get('tolerance')
+    data.datatype=request.form.get('ans_type')
     print varVal 
     if type=='FIB' or type == 'SA':
         return redirect(url_for('insert_choices'))
     else:
-        return render_template('check_variations.html', varVal=varVal)
+        return render_template('check_variations.html', varVal=varVal, type=type)
                 
 global question
 question=[]
@@ -279,10 +283,10 @@ def insert_FIB_QnA(varVal,answer):
         return ans
             
         
-                
+partial_marks=0                
 @app.route('/question_congrats', methods=['POST','GET'])
 def insert_choices():
-    global params, question, db, data, varVal, answer
+    global params, question, db, data, varVal, answer, partial_marks
     print varVal, params, hasParam, answer
     print 'WALAO starts!'
     i,j = 0,0
@@ -307,21 +311,32 @@ def insert_choices():
                 j=j+1
             data.ques.append(question)
             question=[]
-    if type=='MCQ' or type=='MCMR:':
+    print type
+    if type=='MCQ' or type=='MCMR':
         data.ans = insert_MCQ_QnA(varVal, answer)
+        if type=='MCMR':
+            data.partialmarks=request.form.get('partial_marks')
         print data.ques, data.ans   
         db.session.add((QnA(questionno=890,questiongroup=data.questionGroup, questiontype=type, coursecode='EE0040', maxmarks=data.maxmarks)))
-        db.session.add((MCQMCMR(questionno=890,description=data.description, ques=data.ques, ans=data.ans)))
+
+        db.session.add((MCQMCMR(questionno=890,description=data.description, ques=data.ques, ans=data.ans, partialmarks=data.partialmarks)))
         db.session.commit()
-    elif type=='FIB' or type == 'SA':
+    elif type=='FIB':
         data.ans = insert_FIB_QnA(varVal, answer)
         print data.ans
-        db.session.add((QnA(questionno=890,questiongroup=data.questionGroup, questiontype=type)))
-        db.session.add((FIB(questionno=890,description=data.description, ques=data.ques, ans=data.ans)))
+        db.session.add((QnA(questionno=890,questiongroup=data.questionGroup, questiontype=type, coursecode='EE0040', maxmarks=data.maxmarks)))
+        db.session.add((FIB(questionno=890,description=data.description, ques=data.ques, ans=data.ans, tolerance=data.tolerance, datatype=data.datatype)))
+        db.session.commit()
+    elif type == 'SA':
+        data.ans = insert_FIB_QnA(varVal, answer)
+        print data.ans
+        db.session.add((QnA(questionno=890,questiongroup=data.questionGroup, questiontype=type, coursecode='EE0040', maxmarks=data.maxmarks)))
+        db.session.add((SA(questionno=890,description=data.description, ques=data.ques, ans=data.ans, tolerance=data.tolerance, datatype=data.datatype)))
         db.session.commit()
     
+        
     data,params,question,varVal=0,0,0,0
-    return render_template('congrats.html')
+    return render_template('question_congrats.html')
 
 
 

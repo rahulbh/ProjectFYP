@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import backref
+from Project.insert_title import coursecode
 
 
 
@@ -116,6 +117,8 @@ def load_db(db):
     db.create_all()
     db.session.commit()
     db.session.add(Courses(coursecode='EE0040', coursetitle='Engineers And Society'))
+    db.session.add(Users(userid='rahul009', password='password', role='STUD', superuser=True))
+    db.session.add(CourseGroupUsers(loginid='rahul009', coursecode='EE0040'))
     db.session.commit()
 
 """ 

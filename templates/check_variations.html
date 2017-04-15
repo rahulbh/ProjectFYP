@@ -38,21 +38,6 @@
 
 This wizard allows you to add a new question quickly and easily. You can set several options now. 
 </p>
-<script type="text/javascript">
-  function change_radio_name(){
-  var varVal=document.getElementsByName('right\d');
-  // for loop on call by class
-  
-    for(var i = 0; i<varVal[0].value; i++)
-    {
-      var initial_html = document.getElementsByClassName("var_ans_fields")[0].innerHTML;
-      console.log(initial_html);
-    document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Enter Answer Param Value: <input type="text" name="text_ans" class="ans"><br /><br />';
-  }
-}
-
-
-</script>
 <form action="question_congrats" method="post">
 {% autoescape false %}
 {% if (type == 'MCQ'): %}
@@ -80,7 +65,7 @@ Answer Table for Variation {{ i+1 }} :
         <tr>
             <td>1</td>
             <td><input size=25 type="text" id="latbox" name="value{{ i }}"/></td>
-            <td><input type="radio" name="right{{ i }}" value="1"></td>
+            <td><select name="right{{ i }}"><option value="0">0</option><option value="1">1</option></select></td>
             <td><input type="button" id="delPOIbutton" value="Delete" onclick="deleteRow(this, {{ i }})"/></td>
             <td><input type="button" id="addmorePOIbutton" value="Add More Choices" onclick="insRow({{ i }})"></td>
         </tr>
@@ -112,7 +97,7 @@ Answer Table for Variation {{ i+1 }} :
         <tr>
             <td>1</td>
             <td><input size=25 type="text" id="latbox" name="value{{ i }}" /></td>
-            <td><input type="radio" name="right{{ i }}" value="1"></td>
+            <td><select name="right{{ i }}"><option value="0">0</option><option value="1">1</option></select></td>
             <td><input type="button" id="delPOIbutton" value="Delete" onclick="deleteRow(this, {{ i }})"/></td>
             <td><input type="button" id="addmorePOIbutton" value="Add More Choices" onclick="insRow({{ i }})"></td>
         </tr>
@@ -120,6 +105,11 @@ Answer Table for Variation {{ i+1 }} :
     <br><br><br>
 {% endfor %}
 {% endif %}
+<div>
+  {% if type=='MCMR':%}
+  Enter Partial Marks for each correct answer <input type="number" step = "0.01" name="partial_marks">
+  {% endif %}
+</div>
 <button type="submit">Next</button>
 </form>
 </div><br><br><br><br><br><br><br>

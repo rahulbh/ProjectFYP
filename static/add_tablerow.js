@@ -19,7 +19,7 @@ function insRow(varVal)
     var inp1 = new_row.cells[1].getElementsByTagName('input')[0];
     inp1.id += len;
     inp1.value = '';
-    var inp2 = new_row.cells[2].getElementsByTagName('input')[0];
+    var inp2 = new_row.cells[2].getElementsByTagName('select')[0];
     inp2.id += len;
     inp2.value = '';
     x.appendChild( new_row );
