@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>{{ title }}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> 
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='modal.css') }}">
+
+</head>
+<body>
+
+<div id="wrapper">
+  <header>
+ <img src="ntu_logo.jpg" alt="NTU logo" height="102" width="300" >
+  </header>
+  <div id="leftcolumn">
+  <nav>
+    <ul>
+      <li><a href="students.html">Students</a></li>
+      <br>
+      <li><a href="assessments.html">Assessments</a></li>
+	</ul>
+  </nav>	
+  </div>
+  <div id="rightcolumn">
+    <div class="content"> 
+        <!-- Trigger/Open The Modal -->
+<button id="myBtn" style='background-color: #66e0ff;
+    border: none;
+    color: white;
+    padding: 3px 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;'><img src="/static/add_assess.png" height="15" width="15"><b> &nbsp; Add Assessment</b></button>
+<br><br>
+<form action="generate_assessment">
+	<button id="myBtn" style='background-color: #66e0ff;
+    border: none;
+    color: white;
+    padding: 3px 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;'>
+		<img src="/static/add_assess.png" height="15" width="15"><b> &nbsp; Open Assessment</b>
+	</button>
+</form>
+
+<form action="run_file">
+  <button id="myBtn" style='background-color: #66e0ff;
+    border: none;
+    color: white;
+    padding: 3px 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;'>
+    <img src="/static/add_assess.png" height="15" width="15"><b> &nbsp; Add the Questions typed in the file</b>
+  </button>
+</form>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h4>General Options</h4>
+    <div id="leftcolumn">
+    <img src="wizard_add_assessment.jpg" height="205"></div>
+    <div id="rightcolumn">
+    <p>Please set the options below to customize your assessment. 
+</p>
+<form action="insert_GO" method="post"> 
+
+Enter Title of Assignment<input type="text" name="title">
+<input type="checkbox" name="random_questions" id="random_questions" value="yes_display"> Display questions in random order<br>
+<input type="checkbox" name="random_answers" id="random_answers" value="yes_display"> Display answers in random order<br>
+Set max time <input type="text" name="time" id="time"> (mm) 
+
+<br>
+<button style="text-align: right;" type="submit">Next</button></div>
+
+</form><br><br><br><br><br><br><br>
+  </div>
+
+</div>
+    </div></div>
+
+    </div><br><br><br><br><br><br><br><br></div></div>
+    <footer>
+<br><i> &copy; 2017 NANYANG TECHNOLOGICAL UNIVERSITY</i>  
+   </footer>
+  </div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='modal.js') }}"></script>
+</body>
+</html>
+
+

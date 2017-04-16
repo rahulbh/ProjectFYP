@@ -10,7 +10,8 @@ import random
 import subprocess
 import os
 import stat
-
+from importlib import import_module
+import sys
 
 #from insert_QnA_data import insert_MCQ_QnA
 
@@ -50,6 +51,22 @@ def open_shell():
     subprocess.call(['./test.sh'])
     title = 'SAMPLE_QUIZ'
     return render_template("general_options1.html", title=title)
+
+
+@app.route('/run_file')
+def run_file():
+    global db
+    sys.path.append(os.path.abspath("/home/rahulbh/workspace/FYPlearn/Project/"))
+    from add_questions import *
+    for t in addques:
+        db.session.add(QnA(questionno=t['questionno'], questiongroup=t['questiongroup'], questiontype = 'MCQ', remarks=t['remarks'], maxmarks=4, coursecode='EE0040'))
+        db.session.commit()
+        db.session.add(MCQMCMR(questionno=t['questionno'], description=t['description'], ques=t['ques'], ans=t['ans']))
+        db.session.commit()
+    return render_template("general_options.html")
+    
+    
+    
     
 #This function is to generate a table of available number of question from each group, 
 #so that the instructor can select the number of questions to pick from for each topic
