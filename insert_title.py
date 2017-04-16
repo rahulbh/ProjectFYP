@@ -3,10 +3,13 @@ from werkzeug.utils import secure_filename
 from wtforms import Form, RadioField
 import os
 from wtforms import TextField, validators, PasswordField, TextAreaField, HiddenField, SubmitField
-from db_init_final import QnA, db, load_db, MCQMCMR, FIB, Assessments, SA
+from db_init_final import QnA, db, load_db, MCQMCMR, FIB, Assessments, SA, SpecificAssessment
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.functions import func, Select
 import random
+import subprocess
+import os
+import stat
 
 
 #from insert_QnA_data import insert_MCQ_QnA
@@ -24,6 +27,7 @@ with app.test_request_context():
     load_db(db)
     
 data=QnA()
+db.session.expire_on_commit=False 
 
 @app.route('/')
 def insert_title():
@@ -39,30 +43,69 @@ def insert_title():
 quesTop = 0
 seq = 0
 
+@app.route('/open_shell')
+def open_shell():
+    st = os.stat('test.sh')
+    os.chmod('test.sh', st.st_mode | stat.S_IEXEC)
+    subprocess.call(['./test.sh'])
+    title = 'SAMPLE_QUIZ'
+    return render_template("general_options1.html", title=title)
+    
 #This function is to generate a table of available number of question from each group, 
 #so that the instructor can select the number of questions to pick from for each topic
 
 
 
-@app.route('/generate_assessment', methods=['POST'])
+@app.route('/generate_assessment')
 def generate_assessment():
-    global quesTop, seq, db, QnA
-    quesTotal = list()
-    #qQues = list(list())
-    ques_dict = dict()
-    y = list()
-    value = [x[0] for x in quesTop]  #Generate list for the number of questions for each topic
-    print value
-    for i in range(len(seq)):
-        quesTotal.append(int(request.form.get('quesTotal'+str(i))))
-        print 'QUESTOTATL', quesTotal
+    global db
+    mcq = list()
+    detailmcq = list()
+    mcmr = list()
+    detailmcmr = list()
+    fib = list()
+    detailfib = list()
+    sa = list()
+    detailsa = list()
+    
+    ques_brief = list()
+    ques_det = list()
+    for instance in db.session.query(Assessments).filter_by(enabled=True).all():
+        active_ass = instance
         
-        y.append(db.session.query(QnA.questionno).all())
-        #filter_by(questiongroup = value[i]).order_by(func.random())limit(quesTotal[i]))
-        
-        print y
-        ques_dict[seq[i]] = y
-    return render_template('sample_assessment.html', ques_dict=ques_dict)
+    print active_ass.assessmentno
+    
+    #spec_ass = db.session.query(SpecificAssessment).filter_by(assessmentno=active_ass.assessmentno)
+    #spec_ass_MCQ = db.session.query(SpecificAssessment).filter_by(questiontype='MCQ')
+    #spec_ass_MCMR = db.session.query(SpecificAssessment).filter_by(questiontype='MCMR')
+    #spec_ass_FIB = db.session.query(SpecificAssessment).filter_by(questiontype='FIB')
+    #spec_ass_SA = db.session.query(SpecificAssessment).filter_by(questiontype='SA')
+    for instance in db.session.query(SpecificAssessment).filter_by(assessmentno=active_ass.assessmentno):
+        questions = instance.number
+        print 'NUMBER OF QUES', instance.number
+        for j in range(len(questions)):
+            for ins in db.session.query(QnA).filter_by(questionno=questions[j]).all():
+                if ins.questiontype == 'MCQ':
+                    mcq.append(ins)
+                    print mcq[0].questionno
+                    for sample in db.session.query(MCQMCMR).filter_by(questionno=ins.questionno).all():
+                        detailmcq.append(sample)
+                        print 'WALAOOOOOOOOOOOOOOOOOOOOO', sample.questionno
+                elif ins.questiontype == 'MCMR':
+                    mcmr.append(ins)
+                    for sample in db.session.query(MCQMCMR).filter_by(questionno=ins.questionno).all():
+                        detailmcmr.append(sample)
+                elif ins.questiontype == 'FIB':
+                    fib.append(ins)
+                    for sample in db.session.query(FIB).filter_by(questionno=ins.questionno).all():
+                        detailfib.append(sample)
+                elif ins.questiontype == 'SA':
+                    sa.append(ins)
+                    for sample in db.session.query(SA).filter_by(questionno=ins.questionno).all():
+                        detailsa.append(sample)
+                print ins.questiontype
+                
+    return render_template('sample_assessment.html', mcq = mcq, mcmr = mcmr, fib = fib, sa = sa, detailmcq = detailmcq, detailmcmr = detailmcmr, detailsa = detailsa, detailfib = detailfib )
         
          
 title  = ''
@@ -91,9 +134,15 @@ def insert_GO():
     
     return render_template("custom_messages.html")
 
+
+ass =0
+assno=0
+cocode=0
+
 @app.route('/congrats', methods=['POST'])
 def congrats():
-    global location, max_time, message, coursecode, title, random_ques, random_ans
+    global location, max_time, message, coursecode, title, random_ques, random_ans, ass
+    global assno, cocode
     #PUT VALUES IN DATABASE
     message=request.form.getlist('message')
     if(len(message)>0):
@@ -103,9 +152,67 @@ def congrats():
         elif(message[1].len()>1):
             message=message[1]
             location='END'
-    db.session.add(Assessments(coursecode=coursecode, message=message, location=location, title=title, duration=max_time, enabled=True, israndomq=random_ques, israndoma=random_ans))
+    ass = Assessments(coursecode=coursecode, message=message, location=location, title=title, duration=max_time, enabled=True, israndomq=random_ques, israndoma=random_ans)
+    db.session.add(ass)
+    db.session.flush()
+    assno =ass.assessmentno
+    cocode = ass.coursecode
     db.session.commit()
     return render_template("congrats.html")
+
+@app.route('/pick_questions')
+def pick_questions():
+    allQues=dict()
+    allGroups=db.session.query(QnA.questiongroup).distinct().all()
+    print allGroups
+    for group in allGroups:
+        allQues[group]=db.session.query(QnA).filter_by(questiongroup=group).all()
+        print allQues[group]
+    return render_template('pick_questions.html', allQues=allQues, allGroups=allGroups)
+
+@app.route('/add_questions_assessment', methods=['POST'])
+def add_questions_assessment():
+    global assno, cocode
+    mydict=dict()
+    scope = list
+    j=0
+    numbers=db.session.query(QnA.questionno).all()
+    scope=list(list())
+    for i in range(len(numbers)):
+        print 'indi number', isinstance(numbers[i], tuple)
+        #print numbers[i]
+        numbers[i]=str(numbers[i]).translate(None, ",()")
+        numbers[i]=''.join(map(str, numbers[i]))
+        #print request.form.get(numbers[i])
+        if request.form.get(str(numbers[i]))=='checked':
+            print 'HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+            qgroup=str(db.session.query(QnA.questiongroup).filter_by(questionno=numbers[i]).scalar())
+            qtype = db.session.query(QnA.questiontype).filter_by(questionno=numbers[i]).scalar()
+            print qgroup, qtype
+            list_scope=(qgroup, qtype)
+            scope.append(list_scope)
+            if mydict.has_key(scope[j]):
+                mydict[list_scope].append(numbers[i])
+            else:
+                mydict[list_scope] = [numbers[i]]
+            print mydict[scope[j]]
+            j=j+1
+            
+    for i in range(len(scope)):
+        print 'TUPLE', scope[i]
+        qgroup = scope[i][0]
+        qtype = scope[i][1]
+        len_scope=len(scope[i])
+        print assno
+        print cocode
+        print qtype, qgroup, mydict[scope[i]]
+        #map(db.session.refresh, iter(db.session))  # call refresh() on every instance
+        db.session.add(SpecificAssessment(assessmentno=assno, coursecode=cocode, questiontype=qtype, questiongroup=qgroup, number=mydict[scope[i]]))
+        db.session.commit()
+    return render_template('general_options.html')
+
+
+
 
 @app.route('/assessments')
 def assessments():
@@ -170,7 +277,7 @@ def check_param_type():
   
     
 # This is the path to the upload directory
-app.config['UPLOAD_FOLDER'] = 'uploads/'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 # These are the extension that we are accepting to be uploaded
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
 

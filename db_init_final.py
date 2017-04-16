@@ -1,9 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import backref
-from Project.insert_title import coursecode
-
-
 
 db=SQLAlchemy()
 
@@ -103,7 +100,7 @@ class SpecificAssessment(db.Model):
     questiontype = db.Column(db.Enum('MCQ', 'MCMR', 'SA', 'FIB', name='type_enum'), primary_key = True)
     assessmentno = db.Column (db.Integer, db.ForeignKey('Assessments.assessmentno'), primary_key = True)
     questiongroup = db.Column(db.String(64), primary_key = True)
-    number = db.Column (db.Integer, nullable = False)
+    number = db.Column (postgresql.ARRAY(db.String(10), dimensions=1))
     coursecode  = db.Column (db.String(8), db.ForeignKey('Courses.coursecode'), primary_key=True)
     
 
@@ -117,16 +114,18 @@ def load_db(db):
     db.create_all()
     db.session.commit()
     db.session.add(Courses(coursecode='EE0040', coursetitle='Engineers And Society'))
+    db.session.commit()
     db.session.add(Users(userid='rahul009', password='password', role='STUD', superuser=True))
+    db.session.commit()
     db.session.add(CourseGroupUsers(loginid='rahul009', coursecode='EE0040'))
     db.session.commit()
 
-""" 
-    testcases=[{"questionno":801, "questiongroup":"General Science","description":"This question does not relate to the image! Suppose that you plucked %%P1%% apples,and Steve took away three. How many apples do you have?"\
+
+    testcases=[{"questionno":801, "questiongroup":"General Science","description":"This question does not relate to the image! Suppose that you plucked %%P%% apples,and Steve took away three. How many apples do you have?"\
             ,"ques":[['1','0','0','text','five'],['1','1','0','text','six']],"ans":[['0','0','10','0'],['0','1','11','0'],['0','2','2','1'],['0','3','13','0'],['0','4','14','0'],['1','0','21','0'],\
                                                                       ['1','1','22','0'],['1','2','23','0'],['1','3','24','0'],['1','4','All of the Above','0'],['1','5','None of the Above','1']],"remarks":"Hello 801"},\
-                {"questionno":802,"questiongroup":"General Science","description":"Which scientist developed the theory of universal gravitation?"\
-            ,"ques":[['0','0','0','0','0'],['0','0','0','0','0']],"ans":[['0','0','Issac Newtown','0'],['0','1','Charles Darwin','1'],['0','2','Albert Einstein','0'],['0','3','Michael Faraday','0']],"remarks":"Hello 802"},\
+                {"questionno":802,"questiongroup":"General Science","description":"What's the value of Resistance of LDR? %%P%% "\
+            ,"ques":[['1','0','0','image','LDR-circuit-improved.png']],"ans":[['0','0','10 ohm','0'],['0','1','15 ohm','1'],['0','2','15 ohm','0'],['0','3','20 ohm','0']],"remarks":"Hello 802"},\
            \
            {"questionno":803,"questiongroup":"General Science","description":"Which scientist created e=mc<sup>2</sup>??"\
             ,"ques":[['0','0','0','0']],"ans":[['0','0','Issac Newtown','0'],['0','1','Charles Darwin','0'],['0','2','Albert Einstein','1'],['0','3','Michael Faraday','0']],"remarks":"Hello 803"},\
@@ -143,8 +142,8 @@ def load_db(db):
            {"questionno":807,"questiongroup":"Air and Atmosphere","description":"On cooling, a liquid will be changed into"\
             ,"ques":[['0','0','0','0']],"ans":[['0','0','dense','0'],['0','1','solid','1'],['0','2','semi-solid','0'],['0','3','liquid','0']],"remarks":"Hello 807"},\
            \
-           {"questionno":808,"questiongroup":"Air and Atmosphere","description":"Combustion cannot take place without"\
-            ,"ques":[['0','0','0','0']],"ans":[['0','0','water','0'],['0','1','carbon','0'],['0','2','air','1'],['0','3','zinc','0']],"remarks":"Hello 808"},\
+           {"questionno":808,"questiongroup":"Air and Atmosphere","description":"Combustion cannot take place without %%P%%"\
+            ,"ques":[['1','0','0','image', 'Combustion_reaction_of_methane.jpg']],"ans":[['0','0','water','0'],['0','1','carbon','0'],['0','2','air','1'],['0','3','zinc','0']],"remarks":"Hello 808"},\
            \
            {"questionno":809,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"Remaining solid on filter paper is known as"\
             ,"ques":[['0','0','0','0']],"ans":[['0','0','solution','0'],['0','1','stone','0'],['0','2','particles','0'],['0','3','residue','1']],"remarks":"Hello 809"},\
@@ -161,11 +160,53 @@ def load_db(db):
            {"questionno":813,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"Smallest cells present in human body are"\
             ,"ques":[['0','0','0','0']],"ans":[['0','0','red blood','0'],['0','1','brain cells','1'],['0','2','egg-cell','0'],['0','3','nerve','0']],"remarks":"Hello 813"}];
             
-    
+    testcasesmcmr=[{"questionno":814, "questiongroup":"General Science","description":"This question does not relate to the image! Suppose that you plucked %%P%% apples,and Steve took away three. How many apples do you have?"\
+            ,"ques":[['1','0','0','text','five'],['1','1','0','text','six']],"ans":[['0','0','10','1'],['0','1','11','0'],['0','2','2','1'],['0','3','13','0'],['0','4','14','0'],['1','0','21','0'],\
+                                                                      ['1','1','22','0'],['1','2','23','0'],['1','3','24','0'],['1','4','All of the Above','0'],['1','5','None of the Above','1']],"remarks":"Hello 801"},\
+                {"questionno":815,"questiongroup":"General Science","description":"What's the value of Resistance of LDR? %%P%% "\
+            ,"ques":[['1','0','0','image','LDR-circuit-improved.png']],"ans":[['0','0','10 ohm','1'],['0','1','15 ohm','1'],['0','2','15 ohm','0'],['0','3','20 ohm','0']],"remarks":"Hello 802"},\
+           \
+           {"questionno":816,"questiongroup":"General Science","description":"Which scientist created e=mc<sup>2</sup>??"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','Issac Newtown','0'],['0','1','Charles Darwin','1'],['0','2','Albert Einstein','1'],['0','3','Michael Faraday','0']],"remarks":"Hello 803"},\
+           \
+           {"questionno":817,"questiongroup":"Air and Atmosphere","description":"Nitrogen is obtained from fractional distillation of liquefied air at about"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','196 C','0'],['0','1','186 C','1'],['0','2','176 C','1'],['0','3','166 C','0']],"remarks":"Hello 804"},\
+           \
+           {"questionno":818,"questiongroup":"Air and Atmosphere","description":"A greenhouse gas that absorbs energy and maintains earth's temperature is"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','carbon dioxide','1'],['0','1','oxygen','0'],['0','2','nitrogen','1'],['0','3','argon','0']],"remarks":"Hello 805"},\
+           \
+           {"questionno":819,"questiongroup":"Air and Atmosphere","description":"Main constituent in air is"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','nitrogen','1'],['0','1','oxygen','0'],['0','2','argon','1'],['0','3','water vapor','0']],"remarks":"Hello 806"},\
+           \
+           {"questionno":820,"questiongroup":"Air and Atmosphere","description":"On cooling, a liquid will be changed into"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','dense','0'],['0','1','solid','1'],['0','2','semi-solid','1'],['0','3','liquid','0']],"remarks":"Hello 807"},\
+           \
+           {"questionno":821,"questiongroup":"Air and Atmosphere","description":"Combustion cannot take place without %%P%%"\
+            ,"ques":[['1','0','0','image', 'Combustion_reaction_of_methane.jpg']],"ans":[['0','0','water','1'],['0','1','carbon','0'],['0','2','air','1'],['0','3','zinc','0']],"remarks":"Hello 808"},\
+           \
+           {"questionno":822,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"Remaining solid on filter paper is known as"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','solution','0'],['0','1','stone','1'],['0','2','particles','0'],['0','3','residue','1']],"remarks":"Hello 809"},\
+           \
+           {"questionno":823,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"Letter used to identify an element in periodic table is known as"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','formula','0'],['0','1','idea','1'],['0','2','symbol','1'],['0','3','hint','0']],"remarks":"Hello 810"},\
+           \
+           {"questionno":824,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"A component of plant cell that is absent in animal cell is known as"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','cell membrane','0'],['0','1','cytoplasm','1'],['0','2','nucleus','0'],['0','3','Cellulose','1']],"remarks":"Hello 811"},\
+           \
+           {"questionno":825,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"For lowering body tube until objective is 0.25 inches of object, we use"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','illumination','0'],['0','1','Stage','1'],['0','2','diaphragm','0'],['0','3','coarse focus','1']],"remarks":"Hello 812"},\
+           \
+           {"questionno":826,"questiongroup":"Atoms Molecules Mixtures and Compounds","description":"Smallest cells present in human body are"\
+            ,"ques":[['0','0','0','0']],"ans":[['0','0','red blood','1'],['0','1','brain cells','1'],['0','2','egg-cell','0'],['0','3','nerve','0']],"remarks":"Hello 813"}];
     
     
     for t in testcases:
-        db.session.add(QnA(questionno=t['questionno'], questiongroup=t['questiongroup'], questiontype = 'MCQ', remarks=t['remarks']))
-        db.session.add(MCQMCMR(questionno=t['questionno'], description=t['description'], ques=t['ques'], ans=t['ans']))"""
-    
+        db.session.add(QnA(questionno=t['questionno'], questiongroup=t['questiongroup'], questiontype = 'MCQ', remarks=t['remarks'], maxmarks=4, coursecode='EE0040'))
+        db.session.add(MCQMCMR(questionno=t['questionno'], description=t['description'], ques=t['ques'], ans=t['ans']))
+        db.session.commit()
+        
+    for t in testcasesmcmr:
+        db.session.add(QnA(questionno=t['questionno'], questiongroup=t['questiongroup'], questiontype = 'MCMR', remarks=t['remarks'], maxmarks=4, coursecode='EE0040'))
+        db.session.add(MCQMCMR(questionno=t['questionno'], description=t['description'], ques=t['ques'], ans=t['ans']))
+        db.session.commit()
 

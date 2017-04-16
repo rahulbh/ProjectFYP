@@ -87,7 +87,21 @@ function add_ans_fields(){
     document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Enter Answer Param Value: <input type="text" name="text_ans" class="ans"><br /><br />';
   
   }
+  initial_html = document.getElementsByClassName("var_ans_fields")[0].innerHTML;
+  document.getElementsByClassName("var_ans_fields")[0].innerHTML = initial_html + 'Answer Type<select name="ans_type" onchange="add_tolerance();"><option value="String">String</option><option value="Integer">Integer</option><option value="Float">Float</option></select><br /><div name="tol_add" class="tol_add"></div>';
 }
+
+function add_tolerance(){
+  
+  // for loop on call by class
+  
+      var initial_html = document.getElementsByClassName("tol_add")[0].innerHTML;
+      var type=document.getElementsByName('ans_type');
+      console.log(type[0].value);
+      if(type[0].value=='Float' || type[0].value=='Integer'){
+    document.getElementsByClassName("tol_add")[0].innerHTML = initial_html + 'Enter Tolerance in Percent<input type="number" name="tolerance" step="0.0001">;'
+  }}
+  
 </script>
 {% autoescape false %}
 <h2>{{ params|length }}</h2>

@@ -1,40 +1,336 @@
 <!DOCTYPE html>
 <html ng-app="replace">
 <head>
-	<title>Question Page</title>
+	<title>Assessment</title>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 </head>
 <body>
+<table>
+<script type="text/javascript">
+window.onload = function() {
+  add_text();
+  add_text_MCMR();
+  add_text_SA();
+};
+	function add_text(){
+  console.log('WALAOMCQ!!');
+   		var start = 0;
+  		var index = [];
+  	for(var occ = 0; occ<{{ detailmcq|length }}; occ++ )
+  	{
+      var initial_html = document.getElementById("MCQdescription"+ String(occ)).innerHTML;
+      var count = (initial_html.match(/%%P%%/g) || []).length;
+      console.log(count);
+      console.log(initial_html);
+        for (var i = 0; i < count; i++) {
+      index[i] = initial_html.indexOf('%%P%%', start);
+      console.log(index[i]);
+      if (index[i] != -1)
+      {
+      	start = start + index + 4;
+      	var quesno = document.getElementById("MCQdescription"+String(occ)).previousSibling.innerHTML;
+      	
+      	console.log(quesno);
+      	{% if detailmcq[0].ques[0][3]=='text': %}
+      	placeholder = String('{{ detailmcq[0].ques[0][4] }}');
+      	new_html = initial_html.substr(0,index[i]) + placeholder + initial_html.substr(index[i]+6);
+      	{% elif detailmcq[0].ques[0][3] == 'image': %}
+
+      	var placeholder = [];
+      	placeholder[0] = "<br><image src='";
+      	placeholder[1] = "/static/uploads/"+"{{ detailmcq[0].ques[0][4] }}";
+      	placeholder[2] = "'alt='Question Image' style='width:304px;height:228px;'>";
+      	new_html = initial_html.substr(0,index[i]) + placeholder[0] + placeholder[1] + placeholder[2] + initial_html.substr(index[i]+6);
+      	
+      	{% endif %}
+ 
+
+      	initial_html = new_html;
+
+      	console.log(initial_html); 
+      	// var jsdetailmcq = [];
+      	// // {% set place = 0 %}
+
+  //     	for (var indi = 0; i < {{ detailmcq|length }}; i++) {
+  //   	console.log('PLACE', {{ place }});
+  //   	jsdetailmcq.push({{ detailmcq[place].questionno }});	
+  //     	{% set place = place +1 %}
+  //     	}
+      
+  //     console.log('jsdetailmcq', jsdetailmcq[1]);
+  //     	for(var k =0; k<{{ detailmcq|length }}; k++ )
+  //     		{ console.log('jsdetailmcq var', jsdetailmcq[k]);
+  //     			console.log(quesno);
+  //     			if(jsdetailmcq[k]==quesno)
+  //     	 {
+  //     	 	console.log('MATCH HO GAYA');
+  //     		}
+  //     } 
+ }
+ 	var change_loc = document.getElementById("MCQdescription"+ String(occ));
+ 	change_loc.innerHTML = initial_html;
+      console.log('INDICES', index);	
+      }
+      for (var i = 0; i < index.length; i++) {
+      	// console.log(document.getElementById("MCQdescription").previousSibling.innerHTML);
+
+
+      	}
+      	start = 0;
+      }
+    //   console.log(type[0].value);
+    //   if(type[0].value=='Float' || type[0].value=='Integer'){
+    // document.getElementsByClassName("tol_add")[0].innerHTML = initial_html + 'Enter Tolerance in Percent<input type="number" name="tolerance" step="0.0001">;'
+  }
+
+
+	function add_text_MCMR(){
+  console.log('WALAOMCMR!!');
+   		var start = 0;
+  		var index = [];
+  	for(var occ = 0; occ<{{ detailmcmr|length }}; occ++ )
+  	{
+      var initial_html = document.getElementById("MCMRdescription"+ String(occ)).innerHTML;
+      var count = (initial_html.match(/%%P%%/g) || []).length;
+      console.log(count);
+      console.log(initial_html);
+        for (var i = 0; i < count; i++) {
+      index[i] = initial_html.indexOf('%%P%%', start);
+      console.log(index[i]);
+      if (index[i] != -1)
+      {
+      	start = start + index + 4;
+      	var quesno = document.getElementById("MCMRdescription"+String(occ)).previousSibling.innerHTML;
+      	
+      	console.log(quesno);
+      	{% if detailmcmr[0].ques[0][3]=='text': %}
+      	placeholder = String('{{ detailmcmr[0].ques[0][4] }}');
+      	new_html = initial_html.substr(0,index[i]) + placeholder + initial_html.substr(index[i]+6);
+      	{% elif detailmcmr[0].ques[0][3] == 'image': %}
+
+      	var placeholder = [];
+      	placeholder[0] = "<br><image src='";
+      	placeholder[1] = "/static/uploads/"+"{{ detailmcmr[0].ques[0][4] }}";
+      	placeholder[2] = "'alt='Question Image' style='width:304px;height:228px;'>";
+      	new_html = initial_html.substr(0,index[i]) + placeholder[0] + placeholder[1] + placeholder[2] + initial_html.substr(index[i]+6);
+      	
+      	{% endif %}
+ 
+
+      	initial_html = new_html;
+
+      	console.log(initial_html); 
+      	// var jsdetailmcq = [];
+      	// // {% set place = 0 %}
+
+  //     	for (var indi = 0; i < {{ detailmcq|length }}; i++) {
+  //   	console.log('PLACE', {{ place }});
+  //   	jsdetailmcq.push({{ detailmcq[place].questionno }});	
+  //     	{% set place = place +1 %}
+  //     	}
+      
+  //     console.log('jsdetailmcq', jsdetailmcq[1]);
+  //     	for(var k =0; k<{{ detailmcq|length }}; k++ )
+  //     		{ console.log('jsdetailmcq var', jsdetailmcq[k]);
+  //     			console.log(quesno);
+  //     			if(jsdetailmcq[k]==quesno)
+  //     	 {
+  //     	 	console.log('MATCH HO GAYA');
+  //     		}
+  //     } 
+ }
+ 	var change_loc = document.getElementById("MCMRdescription"+ String(occ));
+ 	change_loc.innerHTML = initial_html;
+      console.log('INDICES', index);	
+      }
+      for (var i = 0; i < index.length; i++) {
+      	// console.log(document.getElementById("MCQdescription").previousSibling.innerHTML);
+
+
+      	}
+      	start = 0;
+      }
+    //   console.log(type[0].value);
+    //   if(type[0].value=='Float' || type[0].value=='Integer'){
+    // document.getElementsByClassName("tol_add")[0].innerHTML = initial_html + 'Enter Tolerance in Percent<input type="number" name="tolerance" step="0.0001">;'
+  }
+
+function add_text_SA(){
+  console.log('WALAOSA!!');
+   		var start = 0;
+  		var index = [];
+  	for(var occ = 0; occ<{{ detailsa|length }}; occ++ )
+  	{
+      var initial_html = document.getElementById("SAdescription"+ String(occ)).innerHTML;
+      var count = (initial_html.match(/%%P%%/g) || []).length;
+      console.log(count);
+      console.log(initial_html);
+        for (var i = 0; i < count; i++) {
+      index[i] = initial_html.indexOf('%%P%%', start);
+      console.log(index[i]);
+      if (index[i] != -1)
+      {
+      	start = start + index + 4;
+      	var quesno = document.getElementById("SAdescription"+String(occ)).previousSibling.innerHTML;
+      	
+      	console.log(quesno);
+      	{% if detailsa[0].ques[0][3]=='text': %}
+      	placeholder = String('{{ detailsa[0].ques[0][4] }}');
+      	new_html = initial_html.substr(0,index[i]) + placeholder + initial_html.substr(index[i]+6);
+      	{% elif detailsa[0].ques[0][3] == 'image': %}
+
+      	var placeholder = [];
+      	placeholder[0] = "<br><image src='";
+      	placeholder[1] = "/static/uploads/"+"{{ detailsa[0].ques[0][4] }}";
+      	placeholder[2] = "'alt='Question Image' style='width:304px;height:228px;'>";
+      	new_html = initial_html.substr(0,index[i]) + placeholder[0] + placeholder[1] + placeholder[2] + initial_html.substr(index[i]+6);
+      	
+      	{% endif %}
+ 
+
+      	initial_html = new_html;
+
+      	console.log(initial_html); 
+      	// var jsdetailmcq = [];
+      	// // {% set place = 0 %}
+
+  //     	for (var indi = 0; i < {{ detailmcq|length }}; i++) {
+  //   	console.log('PLACE', {{ place }});
+  //   	jsdetailmcq.push({{ detailmcq[place].questionno }});	
+  //     	{% set place = place +1 %}
+  //     	}
+      
+  //     console.log('jsdetailmcq', jsdetailmcq[1]);
+  //     	for(var k =0; k<{{ detailmcq|length }}; k++ )
+  //     		{ console.log('jsdetailmcq var', jsdetailmcq[k]);
+  //     			console.log(quesno);
+  //     			if(jsdetailmcq[k]==quesno)
+  //     	 {
+  //     	 	console.log('MATCH HO GAYA');
+  //     		}
+  //     } 
+ }
+ 	var change_loc = document.getElementById("SAdescription"+ String(occ));
+ 	change_loc.innerHTML = initial_html;
+      console.log('INDICES', index);	
+      }
+      for (var i = 0; i < index.length; i++) {
+      	// console.log(document.getElementById("MCQdescription").previousSibling.innerHTML);
+
+
+      	}
+      	start = 0;
+      }
+    //   console.log(type[0].value);
+    //   if(type[0].value=='Float' || type[0].value=='Integer'){
+    // document.getElementsByClassName("tol_add")[0].innerHTML = initial_html + 'Enter Tolerance in Percent<input type="number" name="tolerance" step="0.0001">;'
+  }
+
+
+</script>
 <!-- <ol> -->
-{% autoescape false %}
+{% set i = 0 %}
+{% for ins in mcq: %}
+{% if detailmcq[loop.index0].ques[0][1] == '0': %}
+<tr>
+	<td>
+	<li id= 'MCQquesno{{ loop.index0 }}'> 
+	{{ ins.questionno }}
+	</li><li id = 'MCQdescription{{ loop.index0 }}'>
+	{{ detailmcq[loop.index0].description }}
+	</li>
+	</td>
+</tr>
+{% endif %}
+{% set j = ['1'] %}
+{% set outer_loop = loop %}
+{% for choice in range(detailmcq[outer_loop.index0].ans | length): %}
+{% if detailmcq[outer_loop.index0].ans[choice][0]== '0': %}
+{% if j.append('1') %}
+{% endif %}
 
-{% for key, value in ques_dict.iteritems() %}
-            <dt>{{ key }}</dt>
-	{% for key2 in value %}
-		
-            <dd>{{ key2 }}</dd>
-            {% endfor %}
-      {% endfor %}
+{% endif %}
+{% endfor %}
 
+{% for choice in range((j|length) - 1): %}
+{% if detailmcq[outer_loop.index0].ans[choice][0]== '0': %}
+<tr>
+	<td>
+	<input type="radio" name="{{ ins.questionno }}">
+	{{ detailmcq[outer_loop.index0].ans[choice][2]}}
+	</td>
+</tr>
+{% endif %}
+{% set i = i+1 %}
 
+{% endfor %}
+{% endfor %}
 
+<script type="text/javascript">
 
+</script>
+<!-- <ol> -->
+{% set i = 0 %}
+{% for ins in mcmr: %}
+{% if detailmcmr[loop.index0].ques[0][1] == '0': %}
+<tr>
+	<td>
+	<li id= 'MCMRquesno{{ loop.index0 }}'> 
+	{{ ins.questionno }}
+	</li><li id = 'MCMRdescription{{ loop.index0 }}'>
+	{{ detailmcmr[loop.index0].description }}
+	</li>
+	</td>
+</tr>
+{% endif %}
+{% set j = ['1'] %}
+{% set outer_loop = loop %}
+{% for choice in range(detailmcmr[outer_loop.index0].ans | length): %}
+{% if detailmcmr[outer_loop.index0].ans[choice][0]== '0': %}
+{% if j.append('1') %}
+{% endif %}
 
+{% endif %}
+{% endfor %}
 
+{% for choice in range((j|length) - 1): %}
+{% if detailmcmr[outer_loop.index0].ans[choice][0]== '0': %}
+<tr>
+	<td>
+	<input type="checkbox" name="{{ ins.questionno }}">
+	{{ detailmcmr[outer_loop.index0].ans[choice][2]}}
+	</td>
+</tr>
+{% endif %}
+{% set i = i+1 %}
 
+{% endfor %}
+{% endfor %}
 
+{% for ins in sa: %}
+{% if detailsa[loop.index0].ques[0][1] == '0': %}
+<tr>
+	<td>
+	<li id= 'SAquesno{{ loop.index0 }}'> 
+	{{ ins.questionno }}
+	</li><li id = 'SAdescription{{ loop.index0 }}'>
+	{{ detailsa[loop.index0].description }}
+	</li>
+	</td>
+</tr>
+{% endif %}
+<tr>
+	<td>
+	<input type="text" name="{{ ins.questionno }}">
+	</td>
+</tr>
 
+{% endfor %}
 
-
-
-
-
-
-
-{% endautoescape %}
 <!-- </ol> -->
 	<input type="submit" name="submit">
 </form>
+</table>
 <!-- <script type="text/javascript" src="angular.min.js"></script> -->
 <!-- <script type="text/javascript" src="app.js"></script> -->
 </body>
