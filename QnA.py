@@ -125,7 +125,3 @@ for t in testcases:
 
 dbsession.commit()
 qQues=dbsession.query(QnA).all()    
-                    
-                    
-                    
-    

@@ -3,15 +3,48 @@
 <head>
 	<title>Assessment</title>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 <body>
-<table>
 <script type="text/javascript">
 window.onload = function() {
   add_text();
   add_text_MCMR();
   add_text_SA();
+  {% set timer = timer* 60 %}
+  CountDown(600,$('#display'));
+  save_file();
 };
+
+        function CountDown(duration, display) {
+            if (!isNaN(duration)) {
+                var timer = duration, minutes, seconds;
+                
+              var interVal=  setInterval(function () {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    $(display).html("<b>" + minutes + "m : " + seconds + "s" + "</b>");
+                    if (--timer < 0) {
+                        timer = duration;
+                       document.getElementById("myForm").submit();
+                       $('#display').empty();
+                       clearInterval(interVal)
+                    }
+                    },1000);
+            }
+        }
+        
+        function SubmitFunction(){
+       $('form').submit();
+        
+        }
+    
+
+
 	function add_text(){
   console.log('WALAOMCQ!!');
    		var start = 0;
@@ -48,24 +81,6 @@ window.onload = function() {
       	initial_html = new_html;
 
       	console.log(initial_html); 
-      	// var jsdetailmcq = [];
-      	// // {% set place = 0 %}
-
-  //     	for (var indi = 0; i < {{ detailmcq|length }}; i++) {
-  //   	console.log('PLACE', {{ place }});
-  //   	jsdetailmcq.push({{ detailmcq[place].questionno }});	
-  //     	{% set place = place +1 %}
-  //     	}
-      
-  //     console.log('jsdetailmcq', jsdetailmcq[1]);
-  //     	for(var k =0; k<{{ detailmcq|length }}; k++ )
-  //     		{ console.log('jsdetailmcq var', jsdetailmcq[k]);
-  //     			console.log(quesno);
-  //     			if(jsdetailmcq[k]==quesno)
-  //     	 {
-  //     	 	console.log('MATCH HO GAYA');
-  //     		}
-  //     } 
  }
  	var change_loc = document.getElementById("MCQdescription"+ String(occ));
  	change_loc.innerHTML = initial_html;
@@ -157,10 +172,10 @@ window.onload = function() {
 
 function add_text_SA(){
   console.log('WALAOSA!!');
-   		var start = 0;
-  		var index = [];
-  	for(var occ = 0; occ<{{ detailsa|length }}; occ++ )
-  	{
+      var start = 0;
+      var index = [];
+    for(var occ = 0; occ<{{ detailsa|length }}; occ++ )
+    {
       var initial_html = document.getElementById("SAdescription"+ String(occ)).innerHTML;
       var count = (initial_html.match(/%%P%%/g) || []).length;
       console.log(count);
@@ -170,77 +185,95 @@ function add_text_SA(){
       console.log(index[i]);
       if (index[i] != -1)
       {
-      	start = start + index + 4;
-      	var quesno = document.getElementById("SAdescription"+String(occ)).previousSibling.innerHTML;
-      	
-      	console.log(quesno);
-      	{% if detailsa[0].ques[0][3]=='text': %}
-      	placeholder = String('{{ detailsa[0].ques[0][4] }}');
-      	new_html = initial_html.substr(0,index[i]) + placeholder + initial_html.substr(index[i]+6);
-      	{% elif detailsa[0].ques[0][3] == 'image': %}
+        start = start + index + 4;
+        var quesno = document.getElementById("SAdescription"+String(occ)).previousSibling.innerHTML;
+        
+        console.log(quesno);
+        {% if detailsa[0].ques[0][3]=='text': %}
+        placeholder = String('{{ detailsa[0].ques[0][4] }}');
+        new_html = initial_html.substr(0,index[i]) + placeholder + initial_html.substr(index[i]+6);
+        {% elif detailsa[0].ques[0][3] == 'image': %}
 
-      	var placeholder = [];
-      	placeholder[0] = "<br><image src='";
-      	placeholder[1] = "/static/uploads/"+"{{ detailsa[0].ques[0][4] }}";
-      	placeholder[2] = "'alt='Question Image' style='width:304px;height:228px;'>";
-      	new_html = initial_html.substr(0,index[i]) + placeholder[0] + placeholder[1] + placeholder[2] + initial_html.substr(index[i]+6);
-      	
-      	{% endif %}
+        var placeholder = [];
+        placeholder[0] = "<br><image src='";
+        placeholder[1] = "/static/uploads/"+"{{ detailsa[0].ques[0][4] }}";
+        placeholder[2] = "'alt='Question Image' style='width:304px;height:228px;'>";
+        new_html = initial_html.substr(0,index[i]) + placeholder[0] + placeholder[1] + placeholder[2] + initial_html.substr(index[i]+6);
+        
+        {% endif %}
  
 
-      	initial_html = new_html;
+        initial_html = new_html;
 
-      	console.log(initial_html); 
-      	// var jsdetailmcq = [];
-      	// // {% set place = 0 %}
+        console.log(initial_html); 
+        // var jsdetailmcq = [];
+        // // {% set place = 0 %}
 
-  //     	for (var indi = 0; i < {{ detailmcq|length }}; i++) {
-  //   	console.log('PLACE', {{ place }});
-  //   	jsdetailmcq.push({{ detailmcq[place].questionno }});	
-  //     	{% set place = place +1 %}
-  //     	}
+  //      for (var indi = 0; i < {{ detailmcq|length }}; i++) {
+  //    console.log('PLACE', {{ place }});
+  //    jsdetailmcq.push({{ detailmcq[place].questionno }});  
+  //      {% set place = place +1 %}
+  //      }
       
   //     console.log('jsdetailmcq', jsdetailmcq[1]);
-  //     	for(var k =0; k<{{ detailmcq|length }}; k++ )
-  //     		{ console.log('jsdetailmcq var', jsdetailmcq[k]);
-  //     			console.log(quesno);
-  //     			if(jsdetailmcq[k]==quesno)
-  //     	 {
-  //     	 	console.log('MATCH HO GAYA');
-  //     		}
+  //      for(var k =0; k<{{ detailmcq|length }}; k++ )
+  //        { console.log('jsdetailmcq var', jsdetailmcq[k]);
+  //          console.log(quesno);
+  //          if(jsdetailmcq[k]==quesno)
+  //       {
+  //        console.log('MATCH HO GAYA');
+  //        }
   //     } 
  }
- 	var change_loc = document.getElementById("SAdescription"+ String(occ));
- 	change_loc.innerHTML = initial_html;
-      console.log('INDICES', index);	
+  var change_loc = document.getElementById("SAdescription"+ String(occ));
+  change_loc.innerHTML = initial_html;
+      console.log('INDICES', index);  
       }
       for (var i = 0; i < index.length; i++) {
-      	// console.log(document.getElementById("MCQdescription").previousSibling.innerHTML);
+        // console.log(document.getElementById("MCQdescription").previousSibling.innerHTML);
 
 
-      	}
-      	start = 0;
+        }
+        start = 0;
       }
-    //   console.log(type[0].value);
-    //   if(type[0].value=='Float' || type[0].value=='Integer'){
-    // document.getElementsByClassName("tol_add")[0].innerHTML = initial_html + 'Enter Tolerance in Percent<input type="number" name="tolerance" step="0.0001">;'
-  }
 
+function save_file(){
+data = document.getElementsByTagName('html')[0].innerHTML;
 
+localStorage.setItem("GetData", JSON.stringify(data));
+loading();
+}
+
+function loading()
+{
+        alert("coming");
+        var allcookies = localStorage["GetData"];
+        alert(allcookies);
+
+}
 </script>
+
+  <div class="row" style="background:blue">
+     <div class="col-md-1" style="background:blue">&nbsp;</div>
+     <div class="col-md-4" style="background:blue"></div>
+     <div class="col-md-6" style="background:blue"></div>
+     <div class="col-md-1" style="background:blue">&nbsp;</div>
+  </div>
+  <div id="display">
+
+</div>
+<form action="/submit" method="POST" id="myForm">
+	<input type="submit" name="submit" style="position: absolute; right: 0;">
 <!-- <ol> -->
 {% set i = 0 %}
 {% for ins in mcq: %}
 {% if detailmcq[loop.index0].ques[0][1] == '0': %}
-<tr>
-	<td>
-	<li id= 'MCQquesno{{ loop.index0 }}'> 
+	<br><br>
+	<li id= 'MCQquesno{{ loop.index0 }}' style="margin: 0cm 0cm 0cm 3cm;"> 
 	{{ ins.questionno }}
-	</li><li id = 'MCQdescription{{ loop.index0 }}'>
+	</li><li id = 'MCQdescription{{ loop.index0 }}' style="margin: 0cm 0cm 0cm 3cm;">
 	{{ detailmcq[loop.index0].description }}
 	</li>
-	</td>
-</tr>
 {% endif %}
 {% set j = ['1'] %}
 {% set outer_loop = loop %}
@@ -254,12 +287,10 @@ function add_text_SA(){
 
 {% for choice in range((j|length) - 1): %}
 {% if detailmcq[outer_loop.index0].ans[choice][0]== '0': %}
-<tr>
-	<td>
-	<input type="radio" name="{{ ins.questionno }}">
+	<br>
+	<input type="radio" name="{{ ins.questionno }}" style="margin: 0cm 0cm 0cm 3cm;">
 	{{ detailmcq[outer_loop.index0].ans[choice][2]}}
-	</td>
-</tr>
+
 {% endif %}
 {% set i = i+1 %}
 
@@ -273,15 +304,14 @@ function add_text_SA(){
 {% set i = 0 %}
 {% for ins in mcmr: %}
 {% if detailmcmr[loop.index0].ques[0][1] == '0': %}
-<tr>
-	<td>
-	<li id= 'MCMRquesno{{ loop.index0 }}'> 
+
+	<br><br>
+	<li id= 'MCMRquesno{{ loop.index0 }}' style="margin: 0cm 0cm 0cm 3cm;"> 
 	{{ ins.questionno }}
-	</li><li id = 'MCMRdescription{{ loop.index0 }}'>
+	</li><li id = 'MCMRdescription{{ loop.index0 }}' style="margin: 0cm 0cm 0cm 3cm;">
 	{{ detailmcmr[loop.index0].description }}
 	</li>
-	</td>
-</tr>
+
 {% endif %}
 {% set j = ['1'] %}
 {% set outer_loop = loop %}
@@ -295,42 +325,43 @@ function add_text_SA(){
 
 {% for choice in range((j|length) - 1): %}
 {% if detailmcmr[outer_loop.index0].ans[choice][0]== '0': %}
-<tr>
-	<td>
-	<input type="checkbox" name="{{ ins.questionno }}">
+	
+	<input type="checkbox" name="{{ ins.questionno }}" style="margin: 0cm 0cm 0cm 3cm;">
 	{{ detailmcmr[outer_loop.index0].ans[choice][2]}}
-	</td>
-</tr>
+	<br>
+
 {% endif %}
 {% set i = i+1 %}
 
 {% endfor %}
 {% endfor %}
 
+
+    //   console.log(type[0].value);
+    //   if(type[0].value=='Float' || type[0].value=='Integer'){
+    // document.getElementsByClassName("tol_add")[0].innerHTML = initial_html + 'Enter Tolerance in Percent<input type="number" name="tolerance" step="0.0001">;'
+  }
+
 {% for ins in sa: %}
 {% if detailsa[loop.index0].ques[0][1] == '0': %}
-<tr>
-	<td>
-	<li id= 'SAquesno{{ loop.index0 }}'> 
-	{{ ins.questionno }}
-	</li><li id = 'SAdescription{{ loop.index0 }}'>
-	{{ detailsa[loop.index0].description }}
-	</li>
-	</td>
-</tr>
+  <br><br>
+  <li id= 'SAquesno{{ loop.index0 }}' style="margin: 0cm 0cm 0cm 3cm;"> 
+  {{ ins.questionno }}
+  </li><li id = 'SAdescription{{ loop.index0 }}' style="margin: 0cm 0cm 0cm 3cm;">
+  {{ detailsa[loop.index0].description }}
+  </li>
+
 {% endif %}
-<tr>
-	<td>
-	<input type="text" name="{{ ins.questionno }}">
-	</td>
-</tr>
+  <br>
+  <input type="text" name="{{ ins.questionno }}" style="margin: 0cm 0cm 0cm 3cm;">
+
 
 {% endfor %}
 
+
 <!-- </ol> -->
-	<input type="submit" name="submit">
+
 </form>
-</table>
 <!-- <script type="text/javascript" src="angular.min.js"></script> -->
 <!-- <script type="text/javascript" src="app.js"></script> -->
 </body>

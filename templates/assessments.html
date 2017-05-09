@@ -11,7 +11,7 @@
 <body>
 <div id="wrapper">
   <header>
- <img src="ntu_logo.jpg" alt="NTU logo" height="102" width="300" >
+ <img src="{{ url_for('static', filename='ntu_logo.jpg') }}" alt="NTU logo" height="102" width="300" >
   </header>
   <div id="leftcolumn">
     <!--  setup a container element -->
@@ -19,12 +19,8 @@
     <!-- in this, the tree is populated from inline HTML -->
     <ul>
       <li>Assessments
-        <ul>
-          <li id="child_node_1"><a href="">Child node 1</a></li>   <!-- Add newly created assessment link -->
-          <li>Child node 2</li>
-        </ul>
       </li>
-      <li>Root node 2</li>
+      <li>Students</li>
     </ul>
   </div>
 

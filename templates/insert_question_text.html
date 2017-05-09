@@ -80,23 +80,15 @@ What's the maximum score for this question?
 <script type="text/javascript" src="{{ url_for('static', filename='add_question.js')}}"'></script>
 <script type="text/javascript" src="{{ url_for('static', filename='add_tablerow.js')}}"'></script>
 <script type="text/javascript">
+  var i=0;
     function insertP()
     {
    $('#test2').append(' %%P%% ')
+   var initial_html = document.getElementById('counter').value;
+   document.getElementById('counter').value = i+1; 
+    i=i+1;
     }
    
 </script>
-<script type="text/javascript">
-  $(function() {
-    var clicks = 0;
-    $(".my-link").click(function() {
-        clicks++;
-        $.cookie('stored_clicks', clicks);
-        //alert($.cookie('stored_clicks'));
-    });
-});
-  document.getElementById('counter').value = $.cookie('stored_clicks');
-</script>
-
 </body>
 </html>   

@@ -1,5 +1,5 @@
 body {font-family:Verdana, Arial, sans-serif;
-      background-color: #efe4ce;
+      background-color: #b3d1ff;
 }
 #wrapper { background-color: #e9dbbe; 
            color: #000066;
@@ -31,7 +31,7 @@ ul {list-style-type:none;}
 table{width:75%;
 margin:auto;
 }
-header{ background-color:#ccaa66;
+header{ background-color:#0066ff;
         text-align: left;
 }
 
@@ -39,7 +39,7 @@ tr:nth-of-type(odd){background-color:#ccaa66;}
 
 td{padding:5px ;}
 
-h3 {background-color:#ccaa66; 
+h3 {background-color:#0066ff; 
 width:75%;
 margin:auto;}
 

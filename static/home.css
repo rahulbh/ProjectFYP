@@ -1,7 +1,7 @@
 body {font-family:Verdana, Arial, sans-serif;
-      background-color: #efe4ce;
+      background-color: #b3d1ff;
 }
-#wrapper { background-color: #e9dbbe; 
+#wrapper { background-color: #66a3ff; 
            color: #000066;
            width: 80%;
 		   margin: auto;
@@ -31,15 +31,15 @@ ul {list-style-type:none;}
 table{width:75%;
 margin:auto;
 }
-header{ background-color:#ccaa66;
+header{ background-color:#0066ff;
         text-align: left;
 }
 
-tr:nth-of-type(odd){background-color:#80b3ff;}
+tr:nth-of-type(odd){background-color:#ccaa66;}
 
 td{padding:5px ;}
 
-h3 {background-color:#ccaa66; 
+h3 {background-color:#0066ff; 
 width:75%;
 margin:auto;}
 
@@ -57,7 +57,7 @@ margin:auto;}
 	}
 
 
-footer {background-color:#ccaa66;
+footer {background-color:#0066ff;
 	font-size:70%;
          text-align: center;
 		 clear: right;

@@ -75,7 +75,7 @@ def run_file():
 
 @app.route('/generate_assessment')
 def generate_assessment():
-    global db
+    global db, max_time
     mcq = list()
     detailmcq = list()
     mcmr = list()
@@ -121,9 +121,12 @@ def generate_assessment():
                     for sample in db.session.query(SA).filter_by(questionno=ins.questionno).all():
                         detailsa.append(sample)
                 print ins.questiontype
-                
-    return render_template('sample_assessment.html', mcq = mcq, mcmr = mcmr, fib = fib, sa = sa, detailmcq = detailmcq, detailmcmr = detailmcmr, detailsa = detailsa, detailfib = detailfib )
+#     return render_template('s_assess.html')           
+    return render_template('sample_assessment.html', mcq = mcq, mcmr = mcmr, fib = fib, sa = sa, detailmcq = detailmcq, detailmcmr = detailmcmr, detailsa = detailsa, detailfib = detailfib, timer = max_time )
         
+@app.route('/submit', methods=['POST'])
+def submit():
+    return render_template('test.html')
          
 title  = ''
 random_ques=False
@@ -137,7 +140,7 @@ location='BEG'
 def insert_GO():
     #print request.form.get('random_questions')
     #print request.form.get('random_answers')
-    global title, random_ans, random_ques, coursecode
+    global title, random_ans, random_ques, coursecode, max_time
     title = request.form.get('title')
     if request.form.get('random_questions')=='yes_display':
         random_ques=True
@@ -269,7 +272,7 @@ acounter=0
 @app.route('/check_param_type', methods=['POST'])
 def check_param_type():
     global param_count, hasParam, acounter
-    data.description=request.form['desc']
+    data.description=request.form.get('desc')
     data.questionGroup=request.form['group']
     data.maxmarks=int(request.form.get('max_marks'))
     if type == 'MCQ' or type == 'MCMR' or type == 'SA':
@@ -407,7 +410,8 @@ def insert_FIB_QnA(varVal,answer):
         return ans
             
         
-partial_marks=0                
+partial_marks=0           
+data.partialmarks=0     
 @app.route('/question_congrats', methods=['POST','GET'])
 def insert_choices():
     global params, question, db, data, varVal, answer, partial_marks
